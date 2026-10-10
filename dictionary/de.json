@@ -1,0 +1,557 @@
+{
+	"common": {
+		"account": "Konto",
+		"action": "Aktion",
+		"all_users": "Alle Benutzer",
+		"blog": "Blog",
+		"blog_grids": "Blog-Raster",
+		"copy": "Kopieren",
+		"copied": "Kopiert",
+		"copy_link": "Link kopieren",
+		"date": "Datum",
+		"delete_account": "Konto löschen",
+		"download": "Herunterladen",
+		"free_users": "Kostenlose Benutzer",
+		"home": "Startseite",
+		"invoice": "Rechnung",
+		"modal:delete": {
+			"cancel_button": "Abbrechen",
+			"confirm_button": "Löschen",
+			"confirm_button:loading": "Wird gelöscht",
+			"description": "Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden."
+		},
+		"name": "Name",
+		"no_posts": "Keine Beiträge gefunden",
+		"pro_users": "Pro-Benutzer",
+		"send_to": "Senden an",
+		"send": "Senden",
+		"welcome": "Willkommen"
+	},
+	"header": {
+		"features": "Funktionen",
+		"pricing": "Preise",
+		"blog": "Blog",
+		"pages": "Seiten",
+		"blogDetails": "Blog-Details",
+		"signIn": "Anmelden",
+		"signUp": "Registrieren",
+		"errors": "404 Fehler",
+		"support": "Support",
+		"buyNow": "Jetzt kaufen ↗",
+		"account_menu": {
+			"account_settings": "Kontoeinstellungen",
+			"dashboard": "Dashboard",
+			"logOut": "Abmelden"
+		},
+		"notification_menu": {
+			"title": "Benachrichtigungen",
+			"see_all": "Alle Benachrichtigungen anzeigen"
+		}
+	},
+	"homepage": {
+		"hero_section": {
+			"title": "Full-Stack <marker>SaaS Boilerplate</marker> auf Basis von Next.js",
+			"subtitle": "Ein Full-Stack SaaS Boilerplate und Starter-Kit mit allen wichtigen Integrationen, Seiten, Komponenten, Benutzer-/Admin-Dashboards, Landing-Page, Design-Quellen und allem, was Sie benötigen, um Ihre funktionsreiche SaaS-Startup-Idee innerhalb eines Tages in die Realität umzusetzen!",
+			"cta": "Demo testen",
+			"brandshowcase": {
+				"description": "Entwickelt vom selben Team, das hinter zahlreichen erfolgreichen SaaS- und digitalen Produkten steht"
+			}
+		},
+		"features_section": {
+			"title": "SaaS-Startup in Tagen starten",
+			"subtitle": "Alles, was Sie zum Aufbau, Start und zur Skalierung Ihres SaaS-Startups benötigen.",
+			"features": [
+				{
+					"title": "Sofort einsetzbare Integrationen",
+					"description": "Datenbank (Postgres mit Prisma ORM), Authentifizierung (NextAuth), Zahlungen (Stripe), Sanity (Blog), MailChimp (Newsletter), OpenAI, E-Mail und vieles mehr"
+				},
+				{
+					"title": "Hochmoderne Technologien",
+					"description": "Entwickelt mit modernsten Technologien, um eine robuste Grundlage für Ihr SaaS-Produkt zu schaffen und Ihnen einen Wettbewerbsvorteil im digitalen Markt zu verschaffen."
+				},
+				{
+					"title": "Hochwertige Gestaltung",
+					"description": "Jede einzelne Komponente und Seite wurde mit Liebe zum Detail in Figma gestaltet und mit Tailwind CSS für das Next.js-Frontend gestylt."
+				},
+				{
+					"title": "Admin- und Benutzer-Dashboard",
+					"description": "Ermöglicht Ihnen die einfache Verwaltung Ihrer SaaS-Operationen und erlaubt Endnutzern, ihre Kontoeinstellungen problemlos zu verwalten und zu ändern."
+				},
+				{
+					"title": "Vollständig anpassbar",
+					"description": "SaaSBold bietet die Flexibilität, das Design und die Funktionalität Ihrer Software an Ihre spezifischen Geschäftsanforderungen und Ihre Marke anzupassen. Alles ist hochgradig anpassbar und modular."
+				},
+				{
+					"title": "Umfangreiche Dokumentation und E-Mail-Support",
+					"description": "Die Dokumentation enthält detaillierte, schrittweise Anleitungen für jeden Teil von SaaSBold. Wenn Sie weitere Unterstützung benötigen, öffnen Sie einfach ein Support-Ticket und wir werden umgehend antworten."
+				}
+			]
+		},
+		"features_with_image_section": {
+			"title": "Heben Sie sich ab, starten Sie schnell!",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam",
+			"items": [
+				{
+					"title": "Aufbauen, Starten, Skalieren mit SaaSBold",
+					"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit praesent condimentum malesuada consequat quam.",
+					"features": [
+						"Sofort einsetzbare Integrationen",
+						"Hochmoderne Technologien",
+						"Hochwertige Gestaltung"
+					]
+				},
+				{
+					"title": "Das beste SaaS-Boilerplate im Web",
+					"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit praesent condimentum malesuada consequat quam.",
+					"features": [
+						"Admin- und Benutzer-Dashboard",
+						"Vollständig anpassbar",
+						"Umfangreiche Dokumentation und E-Mail-Support"
+					]
+				}
+			]
+		},
+		"pricing_section": {
+			"title": "Einfache und erschwingliche Preise",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"subscription": "monatlich",
+			"plans": [
+				{
+					"name": "Basic",
+					"for": "Für Einzelpersonen",
+					"description": "Lorem ipsum dolor sit amet dolorol met conse ctetur adipiscing elit.",
+					"included": {
+						"title": "Was enthalten ist",
+						"items": [
+							"Alle Grundfunktionen",
+							"Bis zu 1.000.000 verfolgte Besuche",
+							"Premium E-Mail-Support",
+							"Bis zu 03 Teammitglieder"
+						]
+					},
+					"cta": "Loslegen"
+				},
+				{
+					"name": "Pro",
+					"for": "Für Startups",
+					"description": "Lorem ipsum dolor sit amet dolorol met conse ctetur adipiscing elit.",
+					"included": {
+						"title": "Was enthalten ist",
+						"items": [
+							"Alle Grundfunktionen",
+							"Bis zu 1.000.000 verfolgte Besuche",
+							"Premium E-Mail-Support",
+							"Bis zu 03 Teammitglieder"
+						]
+					},
+					"cta": "Loslegen"
+				},
+				{
+					"name": "Enterprise",
+					"for": "Für große Unternehmen",
+					"description": "Lorem ipsum dolor sit amet dolorol met conse ctetur adipiscing elit.",
+					"included": {
+						"title": "Was enthalten ist",
+						"items": [
+							"Alle Grundfunktionen",
+							"Bis zu 1.000.000 verfolgte Besuche",
+							"Premium E-Mail-Support",
+							"Bis zu 03 Teammitglieder"
+						]
+					},
+					"cta": "Loslegen"
+				}
+			]
+		},
+		"faq_section": {
+			"title": "Häufig gestellte Fragen",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"items": [
+				{
+					"question": "Bietet diese App eine kostenlose Testphase?",
+					"answer": "Alle individuellen Framer-Abonnements wurden zu einem Pro-Plan mit Ihrem bestehenden Tarif übernommen. Wenn Sie einen Small-Team-Plan hatten, wurden alle 5 Plätze zu Ihrem bestehenden Tarif in Pro-Plätze umgewandelt."
+				},
+				{
+					"question": "Wie viel kostet diese App?",
+					"answer": "Alle individuellen Framer-Abonnements wurden zu einem Pro-Plan mit Ihrem bestehenden Tarif übernommen. Wenn Sie einen Small-Team-Plan hatten, wurden alle 5 Plätze zu Ihrem bestehenden Tarif in Pro-Plätze umgewandelt."
+				},
+				{
+					"question": "Wie ist die Rückerstattungsrichtlinie?",
+					"answer": "Alle individuellen Framer-Abonnements wurden zu einem Pro-Plan mit Ihrem bestehenden Tarif übernommen. Wenn Sie einen Small-Team-Plan hatten, wurden alle 5 Plätze zu Ihrem bestehenden Tarif in Pro-Plätze umgewandelt."
+				}
+			]
+		},
+		"cta_section": {
+			"title": "Schauen Sie sich die Demo an",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"cta": "Live-Demo testen"
+		},
+		"testimonials_section": {
+			"title": "Geliebt von Unternehmen weltweit.",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam",
+			"items": [
+				{
+					"name": "Devid Warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam."
+				},
+				{
+					"name": "Devid Warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam pulvinar eu mauris sit amet, pretium scelerisque eros."
+				},
+				{
+					"name": "Devid Warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam pulvinar eu mauris sit amet, pretium scelerisque eros."
+				},
+				{
+					"name": "Devid Warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus."
+				},
+				{
+					"name": "Devid Warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam."
+				},
+				{
+					"name": "Devid Warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam pulvinar eu mauris sit amet, pretium scelerisque eros"
+				}
+			]
+		},
+		"counter_section": {
+			"title": "Zahlen, die für sich selbst sprechen"
+		},
+		"newsletter_section": {
+			"title": "Newsletter abonnieren",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"input": "Geben Sie Ihre E-Mail ein",
+			"cta": "Abonnieren"
+		},
+		"latest_blog_section": {
+			"title": "Neueste Blogs & News",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam."
+		}
+	},
+	"footer": {
+		"copyright": "© Your SaaS - Demo SaaS-Website erstellt mit SaaSBold",
+		"company": {
+			"title": "Unternehmen",
+			"items": {
+				"aboutUs": "Über uns",
+				"ourStory": "Unsere Geschichte",
+				"workWithUs": "Arbeiten Sie mit uns"
+			}
+		},
+		"product": {
+			"title": "Produkt",
+			"items": {
+				"features": "Funktionen",
+				"integrations": "Integrationen",
+				"pricing": "Preise & Pläne",
+				"changelog": "Änderungsprotokoll"
+			}
+		},
+		"resources": {
+			"title": "Ressourcen",
+			"items": {
+				"ourBlog": "Unser Blog",
+				"heatMaps": "Heatmaps",
+				"affiliate": "Partnerprogramm",
+				"integrations": "Integrationen"
+			}
+		}
+	},
+	"signInPage": {
+		"socialSignIn": "Anmelden mit",
+		"or": "ODER",
+		"form": {
+			"email": {
+				"label": "E-Mail",
+				"placeholder": "Geben Sie Ihre E-Mail-Adresse ein"
+			},
+			"password": {
+				"label": "Passwort",
+				"placeholder": "Geben Sie Ihr Passwort ein"
+			},
+			"rememberMe": "Angemeldet bleiben",
+			"forgotPassword": "Passwort vergessen?",
+			"magicLinkSubmit": "Magic Link senden",
+			"passwordSubmit": "Anmelden"
+		},
+		"magicLink": "Magischer Link",
+		"password": "Passwort",
+		"noAccount": "Noch kein Konto? <link>Konto erstellen</link>",
+		"demo": {
+			"description": "Oder fortfahren als Demo-Benutzer, Admin",
+			"user": "Benutzer",
+			"admin": "Admin"
+		}
+	},
+	"signUpPage": {
+		"magicLink": "Magischer Link",
+		"email": "E-Mail",
+		"socialSignUp": "Registrieren mit",
+		"or": "ODER",
+		"form": {
+			"name": {
+				"label": "Name",
+				"placeholder": "Gib deinen Benutzernamen ein"
+			},
+			"email": {
+				"label": "E-Mail",
+				"placeholder": "Gib deine E-Mail-Adresse ein"
+			},
+			"password": {
+				"label": "Passwort",
+				"placeholder": "Gib dein Passwort ein"
+			},
+			"submit": "Registrieren"
+		},
+		"alreadyHaveAccount": "Hast du schon ein Konto? <link>Anmelden</link>"
+	},
+	"support_page": {
+		"heading": "Support",
+		"title": "Brauchen Sie Hilfe? Eröffnen Sie einfach ein Support-Ticket",
+		"subtitle": "Unser Support-Team wird sich so schnell wie möglich bei Ihnen melden.",
+		"form": {
+			"full_name": {
+				"label": "Vollständiger Name",
+				"placeholder": "Geben Sie Ihren vollständigen Namen ein"
+			},
+			"email": {
+				"label": "E-Mail",
+				"placeholder": "Geben Sie Ihre E-Mail-Adresse ein"
+			},
+			"message": {
+				"label": "Nachricht",
+				"placeholder": "Geben Sie Ihre Nachricht ein"
+			},
+			"submit": "Nachricht senden"
+		}
+	},
+	"404_page": {
+		"title": "Seite nicht gefunden",
+		"description": "Die Seite, die Sie suchen, existiert nicht. Hier sind einige hilfreiche Links:",
+		"cta": {
+			"home": "Zur Startseite",
+			"go_back": "Zurück gehen"
+		}
+	},
+	"global_search": {
+		"placeholder": "Website durchsuchen... (Unterstützt von Algolia)",
+		"no_results": "Keine Ergebnisse gefunden..."
+	},
+	"account_settings_page": {
+		"heading": "Kontoeinstellungen",
+		"danger_zone": {
+			"title": "Gefahrenzone",
+			"delete_account": {
+				"title": "Konto löschen",
+				"description": "Das Löschen des Kontos entfernt alle Spuren dieses Kontos, einschließlich aller Einreichungen, Datei-Uploads und Einstellungen.",
+				"button": "Löschen"
+			}
+		},
+		"edit_profile": {
+			"title": "Profil bearbeiten",
+			"form": {
+				"upload_image": {
+					"recommend": "Empfohlene Größe: 300x300px",
+					"support": "Unterstützte Formate: jpeg, png, jpg",
+					"max_size": "Maximale Größe: 2MB"
+				},
+				"name": {
+					"label": "Ihr Name",
+					"placeholder": "Geben Sie Ihren Namen ein"
+				},
+				"email": {
+					"label": "E-Mail-Adresse",
+					"placeholder": "Geben Sie Ihre E-Mail-Adresse ein"
+				},
+				"submit": "Änderungen speichern",
+				"submit:loading": "Wird gespeichert"
+			}
+		},
+		"change_password": {
+			"title": "Passwort",
+			"form": {
+				"current_password": {
+					"label": "Aktuelles Passwort",
+					"placeholder": "Geben Sie Ihr aktuelles Passwort ein"
+				},
+				"new_password": {
+					"label": "Neues Passwort",
+					"placeholder": "Geben Sie Ihr neues Passwort ein"
+				},
+				"confirm_password": {
+					"label": "Neues Passwort bestätigen",
+					"placeholder": "Geben Sie Ihr neues Passwort erneut ein"
+				},
+				"submit": "Passwort ändern",
+				"submit:loading": "Wird geändert"
+			}
+		}
+	},
+	"invoice_page": {
+		"heading": "Rechnung",
+		"empty_state": {
+			"title": "Sie haben keine Kaufhistorie",
+			"description": "Bitte kaufen Sie einen Plan, um die Historie anzuzeigen! Vielen Dank.",
+			"cta": "Preise"
+		},
+		"table_columns": {
+			"plan": "Plan",
+			"next_billing_date": "Nächstes Abrechnungsdatum",
+			"txnId": "Transaktions-ID",
+			"amount": "Gesamtbetrag",
+			"action": "Aktion"
+		}
+	},
+	"api_page": {
+		"heading": "API",
+		"create_token": {
+			"title": "Möchten Sie die API nutzen?",
+			"description": "Erstellen Sie ein neues Token, um Zugriff zu erhalten.",
+			"form": {
+				"token_name": {
+					"label": "Token-Name",
+					"placeholder": "Geben Sie einen Token-Namen ein"
+				},
+				"submit": "Token erstellen",
+				"success_toast_message": "Token erfolgreich erstellt!",
+				"error_toast_message": "Fehler beim Erstellen des Tokens"
+			}
+		},
+		"token_list": {
+			"title": "Liste der aktiven Tokens",
+			"no_token": "Kein aktives Token verfügbar!",
+			"delete_api_key": "API-Schlüssel löschen",
+			"error_toast_message": "Fehler beim Löschen des Tokens"
+		}
+	},
+	"sidebar": {
+		"account_settings": "Kontoeinstellungen",
+		"api": "API",
+		"billing": "Abrechnung",
+		"invoice": "Rechnung",
+		"dashboard": "Dashboard",
+		"users": "Benutzer",
+		"ai_integration": "KI-Integration",
+		"send_notification": "Benachrichtigung senden",
+		"send_newsletter": "Newsletter senden",
+		"main_menu": "Hauptmenü",
+		"others": "Andere",
+		"soon": "Bald"
+	},
+	"ai_integration_page": {
+		"heading": "KI-Integration",
+		"set_api_key": {
+			"title": "Sie benötigen einen OpenAI-API-Schlüssel, um die Funktionen der KI-Tools-Vorlage zu nutzen.",
+			"subtitle": "Legen Sie also zuerst Ihren API-Schlüssel fest und beginnen Sie mit der Nutzung...",
+			"cta": "API-Schlüssel festlegen",
+			"modal": {
+				"title": "Geben Sie Ihren OpenAI-API-Schlüssel ein",
+				"description": "Um die Funktionen der KI-Tools-Vorlage nutzen zu können, ist ein gültiger OpenAI-API-Schlüssel erforderlich.",
+				"form": {
+					"submit": "API-Schlüssel festlegen"
+				},
+				"get_api_key": "Holen Sie sich Ihren API-Schlüssel von OpenAI"
+			}
+		},
+		"content_topic": {
+			"title": "Inhaltsthema",
+			"description": "Worüber soll Ihr Inhalt handeln?",
+			"form": {
+				"topic": "Geben Sie Ihr Thema ein",
+				"paragraph_number": {
+					"label": "Anzahl der Absätze",
+					"placeholder": "Option auswählen"
+				},
+				"type": {
+					"label": "Wählen Sie Ihren Typ",
+					"placeholder": "Option auswählen"
+				},
+				"submit": "Generieren"
+			}
+		},
+		"output_result": {
+			"title": "Ergebnis",
+			"description": "Genießen Sie Ihren herausragenden Inhalt basierend auf Ihrem Thema",
+			"placeholder": "Ihre generierte Antwort wird hier angezeigt..."
+		}
+	},
+	"manage_users_page": {
+		"heading": "Benutzer verwalten",
+		"log_in": "Anmelden",
+		"table_header": {
+			"name": "Name",
+			"email": "E-Mail",
+			"role": "Rolle",
+			"registered_on": "Registriert am",
+			"action": "Aktion"
+		},
+		"top_bar": {
+			"admin": "Admin",
+			"user": "Benutzer",
+			"all_users": "Alle Benutzer",
+			"search_user": "Benutzer suchen",
+			"add_new_user": {
+				"title": "Neuen Benutzer hinzufügen",
+				"form": {
+					"email": {
+						"label": "Benutzer-E-Mail",
+						"placeholder": "john@gmail.com"
+					},
+					"role": {
+						"label": "Benutzerrolle auswählen",
+						"placeholder": "Rolle auswählen"
+					},
+					"submit": "Benutzer hinzufügen",
+					"missing_field_error": "Bitte füllen Sie alle Felder aus"
+				}
+			}
+		},
+		"no_users": {
+			"title": "Sie haben noch keine registrierten Benutzer!",
+			"subtitle": "Wenn sich jemand auf Ihrer Website registriert, können Sie ihn hier sehen"
+		}
+	},
+	"admin_page": {
+		"heading": "Dashboard",
+		"stats": {
+			"total_visitors": "Gesamtbesucher",
+			"total_revenue": "Gesamteinnahmen",
+			"free_users": "Kostenlose Benutzer",
+			"pro_users": "Pro-Benutzer"
+		},
+		"overview": {
+			"title": "Übersicht",
+			"description": "Eine Übersicht über die Aktivitäten und Leistungen Ihrer Organisation in allen Projekten.",
+			"stats": {
+				"monthly_recurring_revenue": "Monatliche wiederkehrende Einnahmen",
+				"revenue": "Einnahmen",
+				"fees": "Gebühren",
+				"new_customers": "Neue Kunden",
+				"churn": "Kundenabwanderung",
+				"support_ticket": "Support-Ticket"
+			}
+		}
+	},
+	"send_notification_page": {
+		"heading": "Benachrichtigung senden",
+		"notification_content": {
+			"title": "Benachrichtigungsinhalt",
+			"description": "Geben Sie Ihre Nachricht ein, die Sie Ihrem Publikum mitteilen möchten"
+		}
+	},
+	"send_newsletter_page": {
+		"heading": "Newsletter senden",
+		"newsletter_content": {
+			"title": "Newsletter-Inhalt",
+			"description": "Geben Sie Ihre Nachricht ein, die Sie Ihrem Publikum mitteilen möchten"
+		}
+	}
+}

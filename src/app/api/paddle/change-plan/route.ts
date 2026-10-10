@@ -1,0 +1,55 @@
+import axios from "axios";
+import { NextResponse } from "next/server";
+import { paddleChangePlanSchema } from "./schema";
+
+export async function POST(request: Request) {
+	const body = await request.json();
+	const res = paddleChangePlanSchema.safeParse(body);
+
+	if (!res.success) {
+		return NextResponse.json(
+			{ message: "Invalid Payload", errors: res.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
+	}
+
+	const { subscriptionId, priceId } = res.data;
+
+	try {
+		const { data: response } = await axios.patch(
+			`${process.env.NEXT_PUBLIC_PADDLE_API_URL}/subscriptions/${subscriptionId}`,
+			{
+				proration_billing_mode: "prorated_immediately",
+				items: [
+					{
+						price_id: priceId,
+						quantity: 1,
+					},
+				],
+			},
+			{
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${process.env.PADDLE_API_KEY}`,
+				},
+			}
+		);
+
+		return NextResponse.json(
+			{
+				subscriptionId: response.data.id,
+				customerId: response.data.customer_id,
+				priceId: response.data.items[0].price.id,
+				currentPeriodEnd: new Date(
+					response.data.current_billing_period.ends_at
+				),
+			},
+			{ status: 200 }
+		);
+	} catch (error) {
+		return NextResponse.json(
+			{ message: "Internal Server Error" },
+			{ status: 500 }
+		);
+	}
+}

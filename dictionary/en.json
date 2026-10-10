@@ -1,0 +1,557 @@
+{
+	"common": {
+		"account": "Account",
+		"action": "Action",
+		"all_users": "All Users",
+		"blog": "Blog",
+		"blog_grids": "Blog Grids",
+		"copy": "Copy",
+		"copied": "Copied",
+		"copy_link": "Copy Link",
+		"date": "Date",
+		"delete_account": "Delete Account",
+		"download": "Download",
+		"free_users": "Free Users",
+		"home": "Home",
+		"invoice": "Invoice",
+		"modal:delete": {
+			"cancel_button": "Cancel",
+			"confirm_button": "Delete",
+			"confirm_button:loading": "Deleting",
+			"description": "Are you sure? This action can not be undone."
+		},
+		"name": "Name",
+		"no_posts": "No posts found",
+		"pro_users": "Pro Users",
+		"send_to": "Send To",
+		"send": "Send",
+		"welcome": "Welcome"
+	},
+	"header": {
+		"features": "Features",
+		"pricing": "Pricing",
+		"blog": "Blog",
+		"pages": "Pages",
+		"blogDetails": "Blog Details",
+		"signIn": "Sign In",
+		"signUp": "Sign Up",
+		"errors": "404 Errors",
+		"support": "Support",
+		"buyNow": "Buy Now ↗",
+		"account_menu": {
+			"account_settings": "Account Settings",
+			"dashboard": "Dashboard",
+			"logOut": "Log Out"
+		},
+		"notification_menu": {
+			"title": "Notifications",
+			"see_all": "See All Notifications"
+		}
+	},
+	"homepage": {
+		"hero_section": {
+			"title": "Full-Stack <marker>SaaS Boilerplate</marker> Built on Next.js",
+			"subtitle": "A full-stack SaaS boilerplate and starter kit comes with all essential integrations, pages, components, user/admin dashboards, landing page, design source and everything you need to turn your feature-rich SaaS startup idea into reality in a day!",
+			"cta": "Try Demo",
+			"brandshowcase": {
+				"description": "Built by the same team behind numerous successful SaaS and digital products"
+			}
+		},
+		"features_section": {
+			"title": "Launch SaaS Startup in Days",
+			"subtitle": "Everything you need to build, launch, and scale your SaaS startup.",
+			"features": [
+				{
+					"title": "Ready-to-Use Integrations",
+					"description": "Database (Postgres with Prisma ORM), Auth (NextAuth), Payments (Stripe), Sanity (Blog), MailChimp (Newsletter), OpenAI, Email, and Many More"
+				},
+				{
+					"title": "Cutting-edge Technologies",
+					"description": "Built-with cutting-edge technologies to provide a robust foundation for your SaaS product, giving you a competitive edge in the digital market."
+				},
+				{
+					"title": "High-quality Design",
+					"description": "Every single component and page is designed with attention to detail on Figma and styled with Tailwind CSS for the Next.js front-end."
+				},
+				{
+					"title": "Admin and User Dashboard",
+					"description": "Allows you to easily manage your SaaS operations and enables end-users to easily manage and modify their account settings with ease."
+				},
+				{
+					"title": "Fully Customizable",
+					"description": "SaaSBold provides the flexibility to customize your software's design and functionality to meet your specific business requirements and branding. Everything is highly customizable and modular."
+				},
+				{
+					"title": "Rich Docs and Email Support",
+					"description": "Docs includes detailed, step-by-step guide for every part of SaaSBold. If you need further assistance, simply open a support ticket and we will respond promptly."
+				}
+			]
+		},
+		"features_with_image_section": {
+			"title": "Stand Out, Launch Fast!",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam",
+			"items": [
+				{
+					"title": "Build, Launch, Scale with SaaSBold",
+					"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit praesent condimentum malesuada consequat quam.",
+					"features": [
+						"Ready-to-Use Integrations",
+						"Cutting-edge Technologies",
+						"High-quality Design"
+					]
+				},
+				{
+					"title": "The Best SaaS Boilerplate Available on The Web",
+					"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit praesent condimentum malesuada consequat quam.",
+					"features": [
+						"Admin and User Dashboard",
+						"Fully Customizable",
+						"Rich Docs and Email Support"
+					]
+				}
+			]
+		},
+		"pricing_section": {
+			"title": "Simple Affordable Pricing",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"subscription": "monthly",
+			"plans": [
+				{
+					"name": "Basic",
+					"for": "For Individuals",
+					"description": "Lorem ipsum dolor sit amet dolorol met conse ctetur adipiscing elit.",
+					"included": {
+						"title": "What's included",
+						"items": [
+							"All basic features",
+							"Up to 1,000,000 tracked visits",
+							"Premium email support",
+							"Up to 03 team members"
+						]
+					},
+					"cta": "Get Started"
+				},
+				{
+					"name": "Pro",
+					"for": "For Startups",
+					"description": "Lorem ipsum dolor sit amet dolorol met conse ctetur adipiscing elit.",
+					"included": {
+						"title": "What's included",
+						"items": [
+							"All basic features",
+							"Up to 1,000,000 tracked visits",
+							"Premium email support",
+							"Up to 03 team members"
+						]
+					},
+					"cta": "Get Started"
+				},
+				{
+					"name": "Enterprise",
+					"for": "For big companies",
+					"description": "Lorem ipsum dolor sit amet dolorol met conse ctetur adipiscing elit.",
+					"included": {
+						"title": "What's included",
+						"items": [
+							"All basic features",
+							"Up to 1,000,000 tracked visits",
+							"Premium email support",
+							"Up to 03 team members"
+						]
+					},
+					"cta": "Get Started"
+				}
+			]
+		},
+		"faq_section": {
+			"title": "Frequently Asked Questions",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"items": [
+				{
+					"question": "Does this app offer a free trial period?",
+					"answer": "All individual Framer subscriptions have been grandfathered into a Pro plan at your existing rate. If you were on a Small Team plan, then all 5 seats have been converted over to Pro seats at your existing rate."
+				},
+				{
+					"question": "How much does this app cost?",
+					"answer": "All individual Framer subscriptions have been grandfathered into a Pro plan at your existing rate. If you were on a Small Team plan, then all 5 seats have been converted over to Pro seats at your existing rate."
+				},
+				{
+					"question": "What's the refund policy?",
+					"answer": "All individual Framer subscriptions have been grandfathered into a Pro plan at your existing rate. If you were on a Small Team plan, then all 5 seats have been converted over to Pro seats at your existing rate."
+				}
+			]
+		},
+		"cta_section": {
+			"title": "Check Out The Demo",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"cta": "Try Live Demo"
+		},
+		"testimonials_section": {
+			"title": "Loved by businesses worldwide.",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam",
+			"items": [
+				{
+					"name": "Devid warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam."
+				},
+				{
+					"name": "Devid warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam pulvinar eu mauris sit amet, pretium scelerisque eros."
+				},
+				{
+					"name": "Devid warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam pulvinar eu mauris sit amet, pretium scelerisque eros."
+				},
+				{
+					"name": "Devid warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus."
+				},
+				{
+					"name": "Devid warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam."
+				},
+				{
+					"name": "Devid warner",
+					"designation": "CEO, ABC Company",
+					"comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam pulvinar eu mauris sit amet, pretium scelerisque eros"
+				}
+			]
+		},
+		"counter_section": {
+			"title": "Numbers speaking for themselves"
+		},
+		"newsletter_section": {
+			"title": "Subscribe newsletter",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam.",
+			"input": "Enter your email",
+			"cta": "Subscribe"
+		},
+		"latest_blog_section": {
+			"title": "Latest Blogs & News",
+			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam."
+		}
+	},
+	"footer": {
+		"copyright": "© Your SaaS - Demo SaaS website created using SaaSBold",
+		"company": {
+			"title": "Company",
+			"items": {
+				"aboutUs": "About Us",
+				"ourStory": "Our Story",
+				"workWithUs": "Work with Us"
+			}
+		},
+		"product": {
+			"title": "Product",
+			"items": {
+				"features": "Features",
+				"integrations": "Integrations",
+				"pricing": "Pricing & Plans",
+				"changelog": "Changelog"
+			}
+		},
+		"resources": {
+			"title": "Resources",
+			"items": {
+				"ourBlog": "Our Blog",
+				"heatMaps": "Heatmaps",
+				"affiliate": "Affiliate Program",
+				"integrations": "Integrations"
+			}
+		}
+	},
+	"signInPage": {
+		"socialSignIn": "Sign in with",
+		"or": "OR",
+		"form": {
+			"email": {
+				"label": "Email",
+				"placeholder": "Enter your email"
+			},
+			"password": {
+				"label": "Password",
+				"placeholder": "Enter your password"
+			},
+			"rememberMe": "Remember me",
+			"forgotPassword": "Forgot password?",
+			"magicLinkSubmit": "Send magic link",
+			"passwordSubmit": "Sign In"
+		},
+		"magicLink": "Magic Link",
+		"password": "Password",
+		"noAccount": "Don't have an account yet? <link>Create account</link>",
+		"demo": {
+			"description": "Or Continue as Demo User, Admin",
+			"user": "User",
+			"admin": "Admin"
+		}
+	},
+	"signUpPage": {
+		"magicLink": "Magic Link",
+		"email": "Email",
+		"socialSignUp": "Sign up with",
+		"or": "OR",
+		"form": {
+			"name": {
+				"label": "Name",
+				"placeholder": "Enter your username"
+			},
+			"email": {
+				"label": "Email",
+				"placeholder": "Enter your email"
+			},
+			"password": {
+				"label": "Password",
+				"placeholder": "Enter your password"
+			},
+			"submit": "Sign Up"
+		},
+		"alreadyHaveAccount": "Already have an account? <link>Sign In</link>"
+	},
+	"support_page": {
+		"heading": "Support",
+		"title": "Need any help? Just open a support ticket",
+		"subtitle": "Our support team will get back to as soon as they can.",
+		"form": {
+			"full_name": {
+				"label": "Full Name",
+				"placeholder": "Enter your full name"
+			},
+			"email": {
+				"label": "Email",
+				"placeholder": "Enter your email"
+			},
+			"message": {
+				"label": "Message",
+				"placeholder": "Enter your message"
+			},
+			"submit": "Send Message"
+		}
+	},
+	"404_page": {
+		"title": "Page not found",
+		"description": "The page you are looking for doesn't exist. Here are some helpful links:",
+		"cta": {
+			"home": "Take me home",
+			"go_back": "Go back"
+		}
+	},
+	"global_search": {
+		"placeholder": "Site Search... (Powered by Algolia)",
+		"no_results": "No items found..."
+	},
+	"account_settings_page": {
+		"heading": "Account Settings",
+		"danger_zone": {
+			"title": "Danger Zone",
+			"delete_account": {
+				"title": "Delete Account",
+				"description": "Deleting the Account will erase all traces of this Account, including all submissions and file uploads and Settings.",
+				"button": "Delete"
+			}
+		},
+		"edit_profile": {
+			"title": "Edit Profile",
+			"form": {
+				"upload_image": {
+					"recommend": "Recommended size: 300x300px",
+					"support": "Supported formats: jpeg, png, jpg",
+					"max_size": "Max size: 2MB"
+				},
+				"name": {
+					"label": "Your Name",
+					"placeholder": "Enter your name"
+				},
+				"email": {
+					"label": "Email Address",
+					"placeholder": "Enter your email address"
+				},
+				"submit": "Save Changes",
+				"submit:loading": "Saving"
+			}
+		},
+		"change_password": {
+			"title": "Password",
+			"form": {
+				"current_password": {
+					"label": "Current Password",
+					"placeholder": "Enter your current password"
+				},
+				"new_password": {
+					"label": "New Password",
+					"placeholder": "Enter your new password"
+				},
+				"confirm_password": {
+					"label": "Re-type new Password",
+					"placeholder": "Re-type your new password"
+				},
+				"submit": "Change Password",
+				"submit:loading": "Changing"
+			}
+		}
+	},
+	"invoice_page": {
+		"heading": "Invoice",
+		"empty_state": {
+			"title": "You don't have any purchase history",
+			"description": "Please purchase any plan to see the history! Thank you.",
+			"cta": "Pricing"
+		},
+		"table_columns": {
+			"plan": "Plan",
+			"next_billing_date": "Next Billing Date",
+			"txnId": "Transaction ID",
+			"amount": "Total Amount",
+			"action": "Action"
+		}
+	},
+	"api_page": {
+		"heading": "API",
+		"create_token": {
+			"title": "Want to use the API?",
+			"description": "Create a new token to get the access.",
+			"form": {
+				"token_name": {
+					"label": "Token Name",
+					"placeholder": "Enter a token name"
+				},
+				"submit": "Create Token",
+				"success_toast_message": "Token created successfully!",
+				"error_toast_message": "Failed to create token"
+			}
+		},
+		"token_list": {
+			"title": "List of active tokens",
+			"no_token": "No active token available!",
+			"delete_api_key": "Delete API Key",
+			"error_toast_message": "Failed to delete token"
+		}
+	},
+	"sidebar": {
+		"account_settings": "Account Settings",
+		"api": "API",
+		"billing": "Billing",
+		"invoice": "Invoice",
+		"dashboard": "Dashboard",
+		"users": "Users",
+		"ai_integration": "AI Integration",
+		"send_notification": "Send Notification",
+		"send_newsletter": "Send Newsletter",
+		"main_menu": "Main Menu",
+		"others": "Others",
+		"soon": "Soon"
+	},
+	"ai_integration_page": {
+		"heading": "AI Integration",
+		"set_api_key": {
+			"title": "You need an OpenAI API Key to use AI Tools Template's features.",
+			"subtitle": "So set your API key first and start using...",
+			"cta": "Set API Key",
+			"modal": {
+				"title": "Enter your OpenAI API Key",
+				"description": "To access the capabilities of AI Tools Template, a valid OpenAI API Key is required.",
+				"form": {
+					"submit": "Set API Key"
+				},
+				"get_api_key": "Get your API key from Open AI"
+			}
+		},
+		"content_topic": {
+			"title": "Content Topic",
+			"description": "What your content will be about?",
+			"form": {
+				"topic": "Type your topic",
+				"paragraph_number": {
+					"label": "Number Of Paragraph",
+					"placeholder": "Select option"
+				},
+				"type": {
+					"label": "Select Your Type",
+					"placeholder": "Select option"
+				},
+				"submit": "Generate"
+			}
+		},
+		"output_result": {
+			"title": "Output Result",
+			"description": "Enjoy your outstanding content based on your topic",
+			"placeholder": "Your generated response will appear here..."
+		}
+	},
+	"manage_users_page": {
+		"heading": "Manage Users",
+		"log_in": "Log In",
+		"table_header": {
+			"name": "Name",
+			"email": "Email",
+			"role": "Role",
+			"registered_on": "Registered On",
+			"action": "Action"
+		},
+		"top_bar": {
+			"admin": "Admin",
+			"user": "User",
+			"all_users": "All Users",
+			"search_user": "Search user",
+			"add_new_user": {
+				"title": "Add New User",
+				"form": {
+					"email": {
+						"label": "User Email",
+						"placeholder": "john@gmail.com"
+					},
+					"role": {
+						"label": "Select User Role",
+						"placeholder": "Select role"
+					},
+					"submit": "Add User",
+					"missing_field_error": "Please fill all the fields"
+				}
+			}
+		},
+		"no_users": {
+			"title": "You don't have any registered user yet!",
+			"subtitle": "If any one register to your site then you can see them in here"
+		}
+	},
+	"admin_page": {
+		"heading": "Dashboard",
+		"stats": {
+			"total_visitors": "Total Visitors",
+			"total_revenue": "Total Revenue",
+			"free_users": "Free Users",
+			"pro_users": "Pro Users"
+		},
+		"overview": {
+			"title": "Overview",
+			"description": "An overview of your organization's activity and performance across all your projects.",
+			"stats": {
+				"monthly_recurring_revenue": "Monthly Recurring Revenue",
+				"revenue": "Revenue",
+				"fees": "Fees",
+				"new_customers": "New Customers",
+				"churn": "Churn",
+				"support_ticket": "Support Ticket"
+			}
+		}
+	},
+	"send_notification_page": {
+		"heading": "Send Notification",
+		"notification_content": {
+			"title": "Notification Content",
+			"description": "Type your message that you want to notify your audience"
+		}
+	},
+	"send_newsletter_page": {
+		"heading": "Send Newsletter",
+		"newsletter_content": {
+			"title": "Newsletter Content",
+			"description": "Type your message that you want to notify your audience"
+		}
+	}
+}
