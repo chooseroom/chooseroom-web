@@ -39,24 +39,24 @@ export const authOptions: NextAuthOptions = {
 			},
 
 			async authorize(credentials) {
-				// check to see if eamil and password is there
+				// Require both email and password
 				if (!credentials?.email || !credentials?.password) {
 					throw new Error("Please enter an email or password");
 				}
 
-				// check to see if user already exist
+				// Look up the user
 				const user = await prisma.user.findUnique({
 					where: {
 						email: credentials.email,
 					},
 				});
 
-				// if user was not found
+				// Reject if user not found or has no password (OAuth-only account)
 				if (!user || !user?.password) {
 					throw new Error("No user found");
 				}
 
-				// check to see if passwords match
+				// Verify password using constant-time comparison
 				const passwordMatch = await bcrypt.compare(
 					credentials.password,
 					user.password
@@ -70,6 +70,17 @@ export const authOptions: NextAuthOptions = {
 			},
 		}),
 
+		/**
+		 * IMPERSONATE provider — ADMIN only.
+		 *
+		 * Security model:
+		 *  - The caller MUST supply the correct `adminPassword` for the admin account.
+		 *  - The admin account is looked up by `adminEmail` and its DB role is verified.
+		 *  - Only then is a session for `userEmail` returned.
+		 *
+		 * This prevents unauthenticated callers from impersonating arbitrary users
+		 * simply by guessing an admin's email address.
+		 */
 		CredentialsProvider({
 			name: "impersonate",
 			id: "impersonate",
@@ -77,74 +88,79 @@ export const authOptions: NextAuthOptions = {
 				adminEmail: {
 					label: "Admin Email",
 					type: "text",
-					placeholder: "Jhondoe@gmail.com",
+					placeholder: "admin@example.com",
+				},
+				adminPassword: {
+					label: "Admin Password",
+					type: "password",
 				},
 				userEmail: {
 					label: "User Email",
 					type: "text",
-					placeholder: "Jhondoe@gmail.com",
+					placeholder: "user@example.com",
 				},
 			},
 
 			async authorize(credentials) {
-				// check to see if eamil and password is there
-				if (!credentials?.adminEmail || !credentials?.userEmail) {
-					throw new Error("User email or Admin email is missing");
+				if (
+					!credentials?.adminEmail ||
+					!credentials?.adminPassword ||
+					!credentials?.userEmail
+				) {
+					throw new Error("Admin email, admin password, and user email are required");
 				}
 
+				// Look up the admin account
 				const admin = await prisma.user.findUnique({
 					where: {
 						email: credentials.adminEmail.toLocaleLowerCase(),
 					},
 				});
 
+				// Reject if admin not found, has no password, or is not ADMIN role
+				if (!admin || !admin.password || admin.role !== "ADMIN") {
+					throw new Error("Access denied");
+				}
+
+				// Verify the admin's own password before allowing impersonation
+				const adminPasswordMatch = await bcrypt.compare(
+					credentials.adminPassword,
+					admin.password
+				);
+
+				if (!adminPasswordMatch) {
+					throw new Error("Access denied");
+				}
+
+				// Fetch the target user
 				const user = await prisma.user.findUnique({
 					where: {
 						email: credentials.userEmail.toLocaleLowerCase(),
 					},
 				});
 
-				if (!admin || admin.role !== "ADMIN") {
-					throw new Error("Access denied");
-				}
-
-				// if user was not found
 				if (!user) {
 					throw new Error("No user found");
 				}
+
 				return user;
 			},
 		}),
-		CredentialsProvider({
-			name: "fetchSession",
-			id: "fetchSession",
-			credentials: {
-				email: {
-					label: "User Email",
-					type: "text",
-					placeholder: "Jhondoe@gmail.com",
-				},
-			},
 
-			async authorize(credentials) {
-				// check to see if eamil and password is there
-				if (!credentials?.email) {
-					throw new Error("User email is missing");
-				}
-
-				const user = await prisma.user.findUnique({
-					where: {
-						email: credentials.email.toLocaleLowerCase(),
-					},
-				});
-
-				// if user was not found
-				if (!user) {
-					throw new Error("No user found");
-				}
-				return user;
-			},
-		}),
+		// REMOVED: fetchSession provider
+		//
+		// The original `fetchSession` CredentialsProvider was a critical security
+		// vulnerability: it issued a valid JWT session for ANY registered user given
+		// only their email address — no password or other proof of identity required.
+		//
+		// An attacker who knew (or guessed) a valid email, including an admin email,
+		// could call POST /api/auth/callback/fetchSession and receive a fully
+		// authenticated session, bypassing all authentication.
+		//
+		// The only legitimate use of fetchSession was to refresh billing fields in the
+		// JWT after a Paddle checkout. That use case is now handled by the
+		// trigger === "update" callback path, which re-fetches the trusted fields from
+		// the database rather than accepting them from the client.
 
 		EmailProvider({
 			server: {
@@ -171,22 +187,49 @@ export const authOptions: NextAuthOptions = {
 
 	callbacks: {
 		jwt: async (payload: any) => {
-			const { token, trigger, session } = payload;
+			const { token, trigger } = payload;
 			const user: User = payload.user;
 
+			/**
+			 * JWT update trigger — called when the client calls useSession().update().
+			 *
+			 * SECURITY: Do NOT trust client-supplied privileged fields (role, id, email).
+			 * Instead, re-fetch only the billing fields we actually need from the DB,
+			 * using the user ID already embedded in the token (token.sub) as the
+			 * authoritative source of identity. This prevents a client from escalating
+			 * their own role by passing { role: "ADMIN" } in the session update payload.
+			 */
 			if (trigger === "update") {
+				if (!token.sub) return token;
+
+				// Re-fetch only billing-related fields from the database
+				const freshUser = await prisma.user.findUnique({
+					where: { id: token.sub },
+					select: {
+						priceId: true,
+						subscriptionId: true,
+						currentPeriodEnd: true,
+						customerId: true,
+						image: true,
+						name: true,
+					},
+				});
+
+				if (!freshUser) return token;
+
 				return {
 					...token,
-					...session.user,
-					picture: session.user.image,
-					image: session.user.image,
-					priceId: session.user.priceId,
-					currentPeriodEnd: session.user.currentPeriodEnd,
-					subscriptionId: session.user.subscriptionId,
-					customerId: session.user.customerId,
+					name: freshUser.name,
+					picture: freshUser.image,
+					image: freshUser.image,
+					priceId: freshUser.priceId,
+					currentPeriodEnd: freshUser.currentPeriodEnd,
+					subscriptionId: freshUser.subscriptionId,
+					customerId: freshUser.customerId,
 				};
 			}
 
+			// Initial sign-in: embed user data from the authorize() return value
 			if (user) {
 				return {
 					...token,
@@ -221,7 +264,7 @@ export const authOptions: NextAuthOptions = {
 		},
 	},
 
-	// debug: process.env.NODE_ENV === "developement",
+	// debug: process.env.NODE_ENV === "development",
 };
 
 export const getAuthSession = async () => {

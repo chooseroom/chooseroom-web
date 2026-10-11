@@ -1,6 +1,6 @@
 "use client";
 import Script from "next/script";
-import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 declare global {
@@ -9,7 +9,20 @@ declare global {
 	}
 }
 
+/**
+ * PaddleLoader — initialises the Paddle.js SDK.
+ *
+ * SECURITY: The original implementation called signIn("fetchSession", { email })
+ * after a successful checkout to refresh the session. The fetchSession provider
+ * has been removed because it was a critical authentication bypass.
+ *
+ * Instead, we now use the NextAuth session `update()` mechanism which triggers
+ * the JWT callback with `trigger === "update"`. The callback re-fetches billing
+ * fields from the database server-side, so no client-supplied data is trusted.
+ */
 export function PaddleLoader() {
+	const { update } = useSession();
+
 	const loadPaddle = () => {
 		if (typeof window !== "undefined") {
 			window?.Paddle?.Environment.set("sandbox");
@@ -20,18 +33,15 @@ export function PaddleLoader() {
 						event.name === "checkout.completed" &&
 						event.data.status === "completed"
 					) {
-						signIn("fetchSession", {
-							email: event.data.customer?.email,
-							redirect: false,
-						}).then((callback) => {
-							if (callback?.error) {
-								toast.error(callback.error);
-							}
-
-							if (callback?.ok && !callback?.error) {
-								toast.success("Subcription created successfully");
-							}
-						});
+						// Trigger a server-side session refresh.
+						// The JWT callback re-fetches billing fields from the DB.
+						update()
+							.then(() => {
+								toast.success("Subscription created successfully");
+							})
+							.catch(() => {
+								toast.error("Session refresh failed. Please reload the page.");
+							});
 					}
 				},
 			});

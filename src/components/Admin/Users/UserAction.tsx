@@ -7,9 +7,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { ChangeRole } from "./change-role";
+import ImpersonateModal from "./ImpersonateModal";
 
 export default function UserAction({ user }: any) {
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [showImpersonateModal, setShowImpersonateModal] = useState(false);
 	const [role, setRole] = useState(user.role);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
@@ -49,29 +51,34 @@ export default function UserAction({ user }: any) {
 		}
 	};
 
-	const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-
-		signIn("impersonate", {
+	/**
+	 * SECURITY: Impersonation now requires the admin to confirm their own
+	 * password. The password is sent to the impersonate CredentialsProvider
+	 * which verifies it with bcrypt before granting a session for the target
+	 * user. The password is never stored client-side beyond the modal state.
+	 */
+	const handleLogin = async (adminPassword: string) => {
+		const result = await signIn("impersonate", {
 			adminEmail: session?.user?.email,
+			adminPassword,
 			userEmail: user?.email,
-		}).then((callback) => {
-			if (callback?.error) {
-				toast.error(callback.error);
-			}
-
-			if (callback?.ok && !callback?.error) {
-				toast.success("Logged in successfully");
-				router.refresh();
-			}
+			redirect: false,
 		});
+
+		if (result?.error) {
+			toast.error("Impersonation failed: incorrect password or access denied");
+		} else if (result?.ok) {
+			toast.success("Logged in as user");
+			setShowImpersonateModal(false);
+			router.refresh();
+		}
 	};
 
 	return (
 		<>
 			<div className='mt-2 flex flex-wrap items-center gap-3.5 lsm:ml-auto lsm:justify-end sm:mt-0'>
 				<button
-					onClick={handleLogin}
+					onClick={() => setShowImpersonateModal(true)}
 					className='flex h-10 items-center justify-center rounded-lg bg-primary p-3 text-white hover:bg-primary-dark'
 				>
 					{t("log_in")}
@@ -122,6 +129,13 @@ export default function UserAction({ user }: any) {
 				deleteText='Remove User'
 				handleDelete={handleDelete}
 				loading={isLoading}
+			/>
+
+			<ImpersonateModal
+				show={showImpersonateModal}
+				targetUserEmail={user?.email}
+				onClose={() => setShowImpersonateModal(false)}
+				onConfirm={handleLogin}
 			/>
 		</>
 	);
