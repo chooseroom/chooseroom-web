@@ -62,10 +62,11 @@ model User {
   email                 String?      @unique
   emailVerified         DateTime?
   image                 String?
+  phone                 String?
   password              String?
   passwordResetToken    String?      @unique
   passwordResetTokenExp DateTime?
-  role                  String?      @default("USER")
+  role                  String?      @default("STUDENT") // "ADMIN" | "STUDENT" | "BUSINESS_OWNER"
   customerId            String?      @unique @map(name: "customer_id")
   subscriptionId        String?      @unique @map(name: "subscription_id")
   priceId               String?      @map(name: "price_id")
