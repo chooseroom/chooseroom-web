@@ -20,10 +20,11 @@ export default function RootLayout({
 				<ToastContext />
 				<Providers>
 					<NextTopLoader
-						color='#635BFF'
-						crawlSpeed={300}
+						color='#34D399'
+						crawlSpeed={250}
+						height={3}
 						showSpinner={false}
-						shadow='none'
+						shadow='0 0 10px #34D399,0 0 5px #E5A83B'
 					/>
 					<HeaderWrapper />
 					<div className='isolate'>{children}</div>

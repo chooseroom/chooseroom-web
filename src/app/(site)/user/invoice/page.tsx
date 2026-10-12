@@ -17,7 +17,7 @@ const InvoicePage = async () => {
 
 	return (
 		<>
-			<Breadcrumb pageTitle={t('invoice')} />
+			<Breadcrumb pageTitle={t("invoice")} />
 			{user && <PurchaseHistory user={user} />}
 		</>
 	);

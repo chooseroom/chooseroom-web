@@ -1,7 +1,8 @@
 "use client";
 
+import { BrandLogo } from "@/components/Common/BrandLogo";
+import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,84 +18,101 @@ export default function Sidebar({
 		<>
 			<div
 				ref={sidebarRef}
-				className='h-full border-r border-stroke px-6 py-10 dark:border-stroke-dark'
+				className='flex min-h-full flex-col justify-between px-6 py-8'
 			>
-				<Link href='/' className='mb-10 inline-block'>
-					<Image
-						src={"/images/logo/logo.svg"}
-						alt='logo'
-						className='block dark:hidden'
-						width={193}
-						height={34}
-					/>
-					<Image
-						src={"/images/logo/logo-light.svg"}
-						alt='logo'
-						className='hidden dark:block'
-						width={193}
-						height={34}
-					/>
-				</Link>
-				<div className='mb-6'>
-					<p className='mb-4 font-satoshi text-sm font-medium uppercase text-body dark:text-gray-6'>
-						{t("main_menu")}
-					</p>
-					<ul className='space-y-2'>
-						{sidebarData &&
-							sidebarData?.map((item: any, key: number) => (
-								<li key={key}>
-									<Link
-										href={item?.path}
-										className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 font-satoshi font-medium duration-300 ${
-											pathname === `${item.path}`
-												? "bg-primary bg-opacity-10 text-primary dark:bg-white dark:bg-opacity-10 dark:text-white"
-												: "text-dark hover:bg-primary hover:bg-opacity-10 hover:text-primary dark:text-gray-5 dark:hover:bg-white dark:hover:bg-opacity-10 dark:hover:text-white"
-										}`}
-									>
-										<span className='h-[24px] w-[24px]'>{item?.icon}</span>
-
-										<span>{t(item?.titleKey)}</span>
-
-										{item?.comingSoon && (
-											<span
-												className={`ml-auto rounded-lg px-1.5 text-sm ${
-													pathname === item.path
-														? "bg-primary text-white"
-														: "bg-primary/[.08] text-primary"
-												}`}
-											>
-												{t("soon")}
-											</span>
-										)}
-									</Link>
-								</li>
-							))}
-					</ul>
-				</div>
-				{sidebarOthersData && (
-					<div>
+				<div>
+					<div className='mb-8'>
+						<BrandLogo
+							href={pathname.startsWith("/admin") ? "/admin" : "/user"}
+						/>
+					</div>
+					<div className='mb-6'>
 						<p className='mb-4 font-satoshi text-sm font-medium uppercase text-body dark:text-gray-6'>
-							{t("others")}
+							{t("main_menu")}
 						</p>
 						<ul className='space-y-2'>
-							{sidebarOthersData?.map((item: any) => (
-								<li key={item?.id}>
-									<Link
-										href={`${item?.path}`}
-										className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 font-satoshi font-medium duration-300 ${
-											pathname === `${item.path}`
-												? "bg-primary bg-opacity-10 text-primary dark:bg-white dark:bg-opacity-10 dark:text-white"
-												: "text-dark hover:bg-primary hover:bg-opacity-10 hover:text-primary dark:text-gray-5 dark:hover:bg-white dark:hover:bg-opacity-10 dark:hover:text-white"
-										}`}
-									>
-										<span>{item?.icon}</span>
-										{t(item?.titleKey)}
-									</Link>
-								</li>
-							))}
+							{sidebarData &&
+								sidebarData?.map((item: any, key: number) => (
+									<li key={key}>
+										<Link
+											href={item?.path}
+											className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 font-satoshi font-medium duration-300 ${
+												pathname === `${item.path}`
+													? "bg-primary bg-opacity-10 text-primary dark:bg-white dark:bg-opacity-10 dark:text-white"
+													: "text-dark hover:bg-primary hover:bg-opacity-10 hover:text-primary dark:text-gray-5 dark:hover:bg-white dark:hover:bg-opacity-10 dark:hover:text-white"
+											}`}
+										>
+											<span className='h-[24px] w-[24px]'>{item?.icon}</span>
+
+											<span className='flex-1 truncate'>
+												{item?.title ||
+													(item?.titleKey ? t(item?.titleKey) : "")}
+											</span>
+
+											{item?.comingSoon && (
+												<span className='ml-auto rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+													{typeof item.comingSoon === "string"
+														? item.comingSoon
+														: "Planned"}
+												</span>
+											)}
+										</Link>
+									</li>
+								))}
 						</ul>
 					</div>
-				)}
+					{sidebarOthersData && (
+						<div>
+							<p className='mb-4 font-satoshi text-sm font-medium uppercase text-body dark:text-gray-6'>
+								{t("others")}
+							</p>
+							<ul className='space-y-2'>
+								{sidebarOthersData?.map((item: any) => (
+									<li key={item?.id}>
+										<Link
+											href={`${item?.path}`}
+											className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 font-satoshi font-medium duration-300 ${
+												pathname === `${item.path}`
+													? "bg-primary bg-opacity-10 text-primary dark:bg-white dark:bg-opacity-10 dark:text-white"
+													: "text-dark hover:bg-primary hover:bg-opacity-10 hover:text-primary dark:text-gray-5 dark:hover:bg-white dark:hover:bg-opacity-10 dark:hover:text-white"
+											}`}
+										>
+											<span>{item?.icon}</span>
+											{t(item?.titleKey)}
+										</Link>
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
+				</div>
+
+				{/* Bottom Logout Button */}
+				<div className='mt-8 border-t border-[#E8E3D8] pt-4 dark:border-[#1E382B]'>
+					<button
+						type='button'
+						onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+						className='group flex w-full items-center gap-3 rounded-xl px-3.5 py-3 font-satoshi font-medium text-slate-600 transition-colors duration-200 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-950/30 dark:hover:text-rose-400'
+					>
+						<span className='flex h-[24px] w-[24px] items-center justify-center text-slate-500 transition-colors group-hover:text-rose-600 dark:text-slate-400 dark:group-hover:text-rose-400'>
+							<svg
+								width='20'
+								height='20'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+							>
+								<path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4' />
+								<polyline points='16 17 21 12 16 7' />
+								<line x1='21' y1='12' x2='9' y2='12' />
+							</svg>
+						</span>
+						<span className='truncate font-medium'>Log Out</span>
+					</button>
+				</div>
 			</div>
 		</>
 	);

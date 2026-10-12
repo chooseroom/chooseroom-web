@@ -21,5 +21,4 @@ export default function EmptyState() {
 			<p className='text-body-color text-center text-base'>{t("no_results")}</p>
 		</div>
 	);
-};
-
+}

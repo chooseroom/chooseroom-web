@@ -14,7 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
  * session and only returns data for the session owner — the email parameter is
  * ignored in favour of the session identity.
  */
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
 	// Require an authenticated session
 	const session = await getServerSession(authOptions);
 

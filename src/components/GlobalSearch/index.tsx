@@ -65,4 +65,4 @@ export default function GlobalSearchModal(props: Props) {
 			</div>
 		</div>
 	);
-};
+}

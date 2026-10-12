@@ -29,6 +29,8 @@
 	},
 	"header": {
 		"features": "Funktionen",
+		"how_it_works": "Ablauf",
+		"faq": "FAQ",
 		"pricing": "Preise",
 		"blog": "Blog",
 		"pages": "Seiten",
@@ -41,6 +43,10 @@
 		"account_menu": {
 			"account_settings": "Kontoeinstellungen",
 			"dashboard": "Dashboard",
+			"admin_panel": "Admin-Bereich",
+			"overview": "Admin-Übersicht",
+			"pg_owners": "PG-Inhaber",
+			"settings": "Einstellungen & Sicherheit",
 			"logOut": "Abmelden"
 		},
 		"notification_menu": {
@@ -79,11 +85,11 @@
 				},
 				{
 					"title": "Vollständig anpassbar",
-					"description": "SaaSBold bietet die Flexibilität, das Design und die Funktionalität Ihrer Software an Ihre spezifischen Geschäftsanforderungen und Ihre Marke anzupassen. Alles ist hochgradig anpassbar und modular."
+					"description": "Flexible Konfiguration für Raumaufteilung, Zimmerbelegung und Arbeitsabläufe."
 				},
 				{
 					"title": "Umfangreiche Dokumentation und E-Mail-Support",
-					"description": "Die Dokumentation enthält detaillierte, schrittweise Anleitungen für jeden Teil von SaaSBold. Wenn Sie weitere Unterstützung benötigen, öffnen Sie einfach ein Support-Ticket und wir werden umgehend antworten."
+					"description": "Schrittweise Anleitungen zur Verwaltung von Zimmern, Betten und Bewohnerdaten."
 				}
 			]
 		},
@@ -92,7 +98,7 @@
 			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam",
 			"items": [
 				{
-					"title": "Aufbauen, Starten, Skalieren mit SaaSBold",
+					"title": "Verwalten und Skalieren von PG- und Hostel-Betrieben",
 					"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit praesent condimentum malesuada consequat quam.",
 					"features": [
 						"Sofort einsetzbare Integrationen",
@@ -237,7 +243,7 @@
 		}
 	},
 	"footer": {
-		"copyright": "© Your SaaS - Demo SaaS-Website erstellt mit SaaSBold",
+		"copyright": "© Choose Ghar. Alle Rechte vorbehalten.",
 		"company": {
 			"title": "Unternehmen",
 			"items": {
@@ -433,6 +439,11 @@
 		}
 	},
 	"sidebar": {
+		"overview": "Übersicht",
+		"pg_owners": "PG-Besitzer",
+		"properties": "Objekte",
+		"activity_security": "Aktivität & Sicherheit",
+		"settings": "Einstellungen",
 		"account_settings": "Kontoeinstellungen",
 		"api": "API",
 		"billing": "Abrechnung",

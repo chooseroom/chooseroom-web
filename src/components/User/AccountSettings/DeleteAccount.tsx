@@ -39,7 +39,7 @@ const DeleteAccount = ({ setShowDeleteModal, showDeleteModal }: any) => {
 				</h4>
 
 				<p>{t("delete_account.description")}</p>
-				
+
 				<button
 					onClick={() => setShowDeleteModal(!showDeleteModal)}
 					className='mt-6 flex items-center justify-center gap-2 rounded-lg bg-dark px-6 py-2.5 font-satoshi text-base font-medium tracking-[-.2px] text-white duration-300 hover:bg-dark/90 dark:bg-white dark:text-dark dark:hover:bg-white/90'

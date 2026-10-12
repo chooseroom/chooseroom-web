@@ -66,6 +66,13 @@ export const authOptions: NextAuthOptions = {
 					throw new Error("Incorrect password");
 				}
 
+				// Reject if account is suspended
+				if (user.status === "SUSPENDED") {
+					throw new Error(
+						"Your account has been suspended. Please contact the administrator."
+					);
+				}
+
 				return user;
 			},
 		}),
@@ -107,7 +114,9 @@ export const authOptions: NextAuthOptions = {
 					!credentials?.adminPassword ||
 					!credentials?.userEmail
 				) {
-					throw new Error("Admin email, admin password, and user email are required");
+					throw new Error(
+						"Admin email, admin password, and user email are required"
+					);
 				}
 
 				// Look up the admin account
@@ -212,6 +221,7 @@ export const authOptions: NextAuthOptions = {
 						customerId: true,
 						image: true,
 						name: true,
+						status: true,
 					},
 				});
 
@@ -226,6 +236,7 @@ export const authOptions: NextAuthOptions = {
 					currentPeriodEnd: freshUser.currentPeriodEnd,
 					subscriptionId: freshUser.subscriptionId,
 					customerId: freshUser.customerId,
+					status: freshUser.status,
 				};
 			}
 
@@ -238,6 +249,7 @@ export const authOptions: NextAuthOptions = {
 					currentPeriodEnd: user.currentPeriodEnd,
 					subscriptionId: user.subscriptionId,
 					role: user.role,
+					status: user.status,
 					picture: user.image,
 					image: user.image,
 				};
@@ -256,6 +268,7 @@ export const authOptions: NextAuthOptions = {
 						currentPeriodEnd: token.currentPeriodEnd,
 						subscriptionId: token.subscriptionId,
 						role: token.role,
+						status: token.status,
 						image: token.picture,
 					},
 				};

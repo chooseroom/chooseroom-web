@@ -9,7 +9,7 @@ export default function Header({ openSidebar, setOpenSidebar }: any) {
 	const t = useTranslations("common");
 
 	return (
-		<div className='sticky top-0 z-999 flex items-center justify-between border-b border-stroke bg-white px-5 py-5 dark:border-stroke-dark dark:bg-gray-dark md:px-10'>
+		<div className='sticky top-0 z-999 flex items-center justify-between border-b border-stroke bg-white px-4 py-3.5 dark:border-stroke-dark dark:bg-gray-dark sm:px-6 md:px-10 md:py-4'>
 			<div onClick={() => setOpenSidebar(!openSidebar)} className='lg:hidden '>
 				<span className='relative block h-5.5 w-5.5 cursor-pointer'>
 					<span className='du-block absolute right-0 h-full w-full'>

@@ -66,7 +66,9 @@ model User {
   password              String?
   passwordResetToken    String?      @unique
   passwordResetTokenExp DateTime?
-  role                  String?      @default("STUDENT") // "ADMIN" | "STUDENT" | "BUSINESS_OWNER"
+  role                  String?      @default("BUSINESS_OWNER") // "ADMIN" | "BUSINESS_OWNER"
+  status                String       @default("ACTIVE") // "ACTIVE" | "SUSPENDED"
+  setupCompleted        Boolean      @default(false)
   customerId            String?      @unique @map(name: "customer_id")
   subscriptionId        String?      @unique @map(name: "subscription_id")
   priceId               String?      @map(name: "price_id")
@@ -76,6 +78,28 @@ model User {
   sessions              Session[]
   apiKeys               ApiKey[]
   invitation            Invitation[]
+  adminLogs             AdminAuditLog[] @relation("AdminActions")
+
+  @@index([phone])
+  @@index([status])
+}
+
+model AdminAuditLog {
+  id          String   @id @default(cuid())
+  adminId     String
+  adminEmail  String
+  action      String   // "SUSPEND_OWNER" | "ACTIVATE_OWNER" | "UPDATE_OWNER" | "SYSTEM_ACTION"
+  targetId    String?
+  targetEmail String?
+  details     String?  @db.Text
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  admin       User     @relation("AdminActions", fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([createdAt])
+  @@index([action])
 }
 
 model VerificationToken {

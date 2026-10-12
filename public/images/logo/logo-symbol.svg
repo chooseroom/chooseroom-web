@@ -1,0 +1,23 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Choose Ghar Symbol Master - Concept B (CG Architectural Monogram) -->
+  <rect width="40" height="40" rx="10" fill="#0B2B20"/>
+  <rect x="0.75" y="0.75" width="38.5" height="38.5" rx="9.25" stroke="#1B4D3A" stroke-width="1.5"/>
+  
+  <!-- Outer 'C' Ribbon (Shelter & Community) -->
+  <path d="M28.4 13.2C26.2 10.4 22.8 8.8 19.2 8.8C12.57 8.8 7.2 13.8 7.2 20.4C7.2 27 12.57 32 19.2 32C24.4 32 28.8 28.8 30.4 24" 
+        stroke="#FFFFFF" 
+        stroke-width="3.2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Inner 'G' Architectural Flow (Doorway & Structure) -->
+  <path d="M19.2 15.2C16.1 15.2 13.6 17.6 13.6 20.4C13.6 23.2 16.1 25.6 19.2 25.6C22.3 25.6 24.8 23.2 24.8 20.4V20H19.2" 
+        stroke="#34D399" 
+        stroke-width="2.8" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+        
+  <!-- Golden Keystone / Hearth Diamond Accent -->
+  <path d="M29.6 10L32.4 12.8L29.6 15.6L26.8 12.8Z" fill="#E5A83B"/>
+  <circle cx="29.6" cy="12.8" r="0.8" fill="#0B2B20"/>
+</svg>

@@ -4,7 +4,7 @@ const REGEX = {
 	uppercase: /[A-Z]/,
 	lowercase: /[a-z]/,
 	number: /\d/,
-	specialChar: /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/]/,
+	specialChar: /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/]/,
 };
 
 export const passwordSchema = z

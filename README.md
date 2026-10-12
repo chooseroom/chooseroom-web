@@ -87,5 +87,5 @@ reality.
 - Fixed mobile nav toggle issue
 - Removed breadcrumb from single blog page
 - Updated Layout (to prevent client rendering):
-    - moved pre-loader logic to PreLoader File
-    - moved header & footer to HeaderWrapper & FooterWrapper
+  - moved pre-loader logic to PreLoader File
+  - moved header & footer to HeaderWrapper & FooterWrapper

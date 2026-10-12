@@ -153,7 +153,7 @@ async function test_prisma_query_logging_disabled_in_production() {
 	);
 
 	// Must have an environment guard around "query"
-	if (!source.includes('NODE_ENV') || !source.includes('"development"')) {
+	if (!source.includes("NODE_ENV") || !source.includes('"development"')) {
 		throw new Error(
 			"FAIL: prismaDb.ts does not appear to guard query logging behind " +
 				"NODE_ENV === 'development'."
@@ -163,7 +163,7 @@ async function test_prisma_query_logging_disabled_in_production() {
 	// Must not have unconditional log: ["query"]
 	if (/log:\s*\[\s*["']query["']\s*\]/.test(source)) {
 		throw new Error(
-			"FAIL: prismaDb.ts still has unconditional log: [\"query\"]. " +
+			'FAIL: prismaDb.ts still has unconditional log: ["query"]. ' +
 				"This logs all SQL queries in production."
 		);
 	}
@@ -195,10 +195,7 @@ async function test_fetch_user_route_has_auth_check() {
 	const path = await import("path");
 
 	const source = fs.readFileSync(
-		path.resolve(
-			process.cwd(),
-			"src/app/api/user/fetch-user/route.ts"
-		),
+		path.resolve(process.cwd(), "src/app/api/user/fetch-user/route.ts"),
 		"utf-8"
 	);
 
@@ -274,9 +271,7 @@ async function test_impersonate_requires_admin_password() {
 		);
 	}
 
-	console.log(
-		"PASS: impersonate provider requires adminPassword credential."
-	);
+	console.log("PASS: impersonate provider requires adminPassword credential.");
 }
 
 // ---------------------------------------------------------------------------
@@ -305,7 +300,9 @@ async function test_impersonate_requires_admin_password() {
 		}
 	}
 
-	console.log(`\n=== Security Regression Results: ${passed} passed, ${failed} failed ===`);
+	console.log(
+		`\n=== Security Regression Results: ${passed} passed, ${failed} failed ===`
+	);
 
 	console.log("\n--- Manual tests (require running dev server) ---");
 	console.log("TEST 2 (fetchSession HTTP endpoint):", MANUAL_TEST_2);

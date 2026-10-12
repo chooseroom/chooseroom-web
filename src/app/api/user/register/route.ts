@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 		);
 	}
 
-	const { name, email, password } = res.data;
+	const { name, email, password, phone } = res.data;
 
 	const isUserRegistered = await prisma.user.findUnique({
 		where: { email },
@@ -25,25 +25,19 @@ export async function POST(request: Request) {
 		return new NextResponse("Email already exists", { status: 409 });
 	}
 
-	const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
-
-	// Function to check if an email is in the list of admin emails
-	function isAdminEmail(email: string) {
-		return adminEmails.includes(email);
-	}
-
 	const hashedPassword = await bcrypt.hash(password, 10);
 
+	// SECURITY: Public registration ALWAYS assigns BUSINESS_OWNER role.
+	// Admin accounts are provisioned exclusively through controlled administrative processes.
 	const newUser = {
 		name,
-		email,
+		email: email.toLowerCase().trim(),
 		password: hashedPassword,
-		role: "USER",
+		role: "BUSINESS_OWNER",
+		status: "ACTIVE",
+		setupCompleted: false,
+		...(phone ? { phone: phone.trim() } : {}),
 	};
-
-	if (isAdminEmail(email)) {
-		newUser.role = "ADMIN";
-	}
 
 	try {
 		const user = await prisma.user.create({

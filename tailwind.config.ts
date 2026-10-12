@@ -69,18 +69,18 @@ const config: Config = {
 				body: "#64748B",
 				stroke: {
 					DEFAULT: "#E8E8E8",
-					dark: "#394152",
+					dark: "#1E3A2F",
 				},
 				primary: {
-					DEFAULT: "#635BFF",
-					dark: "#3E22E9",
+					DEFAULT: "#0B2B20",
+					dark: "#133E2F",
 				},
 				dark: {
-					DEFAULT: "#1C274C",
-					2: "#495270",
-					3: "#606882",
-					4: "#8D93A5",
-					5: "#BBBEC9",
+					DEFAULT: "#071711",
+					2: "#132E23",
+					3: "#1E4435",
+					4: "#355B4B",
+					5: "#8E9E97",
 				},
 				gray: {
 					DEFAULT: "#F3F5F6",
@@ -91,7 +91,7 @@ const config: Config = {
 					5: "#9CA3AF",
 					6: "#6B7280",
 					7: "#374151",
-					dark: "#272E40",
+					dark: "#0E231B",
 				},
 				red: {
 					...colors.red,

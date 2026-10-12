@@ -2,28 +2,20 @@ import Home from "@/components/Home";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: `SaaSBold Demo - SaaS Boilerplate for Next.js`,
-	description: `A full-stack SaaS boilerplate and starter kit comes with all essential integrations, pages, components, user/admin dashboards, landing page, design source and everything you need to turn your feature-rich SaaS startup idea into reality in a day!`,
+	title: "Choose Ghar | Smart PG & Hostel Management Software India",
+	description:
+		"Choose Ghar is the premier PG and hostel management software for Indian owners. Effortlessly manage rooms, bed occupancy, resident records, and rent dues across single or multi-branch properties.",
 	openGraph: {
 		type: "website",
-		title: `SaaSBold Demo - SaaS Boilerplate for Next.js`,
-		description: `A full-stack SaaS boilerplate and starter kit comes with all essential integrations, pages, components, user/admin dashboards, landing page, design source and everything you need to turn your feature-rich SaaS startup idea into reality in a day!`,
-		images:
-			"https://ucarecdn.com/4b0ffd0e-90b0-4a59-b63c-f5ecee0ae575/saasbold.jpg",
+		title: "Choose Ghar | Smart PG & Hostel Management Software India",
+		description:
+			"Simple, reliable PG management software for Indian owners. Track rooms, beds, and residents in real time.",
 	},
-	twitter: {
-		card: "summary_large_image",
-		title: `SaaSBold Demo - SaaS Boilerplate for Next.js`,
-		description: `A full-stack SaaS boilerplate and starter kit comes with all essential integrations, pages, components, user/admin dashboards, landing page, design source and everything you need to turn your feature-rich SaaS startup idea into reality in a day!`,
-		images:
-			"https://ucarecdn.com/4b0ffd0e-90b0-4a59-b63c-f5ecee0ae575/saasbold.jpg",
+	icons: {
+		icon: "/images/logo/favicon.svg",
 	},
 };
 
 export default function HomePage() {
-	return (
-		<main>
-			<Home />
-		</main>
-	);
+	return <Home />;
 }

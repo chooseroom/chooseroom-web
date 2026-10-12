@@ -29,6 +29,8 @@
 	},
 	"header": {
 		"features": "Features",
+		"how_it_works": "How It Works",
+		"faq": "FAQ",
 		"pricing": "Pricing",
 		"blog": "Blog",
 		"pages": "Pages",
@@ -41,6 +43,10 @@
 		"account_menu": {
 			"account_settings": "Account Settings",
 			"dashboard": "Dashboard",
+			"admin_panel": "Admin Control Panel",
+			"overview": "Admin Overview",
+			"pg_owners": "PG Owners",
+			"settings": "Settings & Security",
 			"logOut": "Log Out"
 		},
 		"notification_menu": {
@@ -79,11 +85,11 @@
 				},
 				{
 					"title": "Fully Customizable",
-					"description": "SaaSBold provides the flexibility to customize your software's design and functionality to meet your specific business requirements and branding. Everything is highly customizable and modular."
+					"description": "Flexible configuration to match your property layout, sharing structure, and operational workflow."
 				},
 				{
 					"title": "Rich Docs and Email Support",
-					"description": "Docs includes detailed, step-by-step guide for every part of SaaSBold. If you need further assistance, simply open a support ticket and we will respond promptly."
+					"description": "Clear guides for managing rooms, beds, resident records, and monthly rent cycles."
 				}
 			]
 		},
@@ -92,7 +98,7 @@
 			"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dictum euismod malesuada lacus, non consequat quam",
 			"items": [
 				{
-					"title": "Build, Launch, Scale with SaaSBold",
+					"title": "Organize, Track, and Manage Your PG Operations",
 					"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit praesent condimentum malesuada consequat quam.",
 					"features": [
 						"Ready-to-Use Integrations",
@@ -237,7 +243,7 @@
 		}
 	},
 	"footer": {
-		"copyright": "© Your SaaS - Demo SaaS website created using SaaSBold",
+		"copyright": "© Choose Ghar. All rights reserved.",
 		"company": {
 			"title": "Company",
 			"items": {
@@ -433,6 +439,11 @@
 		}
 	},
 	"sidebar": {
+		"overview": "Overview",
+		"pg_owners": "PG Owners",
+		"properties": "Properties",
+		"activity_security": "Activity & Security",
+		"settings": "Settings",
 		"account_settings": "Account Settings",
 		"api": "API",
 		"billing": "Billing",

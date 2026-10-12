@@ -25,7 +25,6 @@
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
 		"plugin:react/recommended",
-		"plugin:react-hooks/recommended",
 		"prettier"
 	],
 	"plugins": ["@typescript-eslint", "prettier"],
@@ -62,7 +61,7 @@
 			"error",
 			{
 				"selector": "variable",
-				"format": ["camelCase", "PascalCase"]
+				"format": ["camelCase", "PascalCase", "UPPER_CASE"]
 			},
 			{
 				"selector": "function",
@@ -76,20 +75,14 @@
 		"react/react-in-jsx-scope": "off",
 		"react/no-unknown-property": "warn",
 		"react/prop-types": "off"
-	}
-	// "overrides": [
-	// 	{
-	// 		"files": [
-	// 			"bin/*.js",
-	// 			"lib/*.js"
-	// 		],
-	// 		"excludedFiles": "*.test.js",
-	// 		"rules": {
-	// 			"quotes": [
-	// 				"error",
-	// 				"single"
-	// 			]
-	// 		}
-	// 	}
-	// ]
+	},
+	"overrides": [
+		{
+			"files": ["src/__tests__/**/*", "**/*.test.ts"],
+			"rules": {
+				"no-console": "off",
+				"@typescript-eslint/naming-convention": "off"
+			}
+		}
+	]
 }

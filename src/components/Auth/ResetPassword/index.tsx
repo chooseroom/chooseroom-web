@@ -1,13 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import FormButton from "@/components/Common/Dashboard/FormButton";
-import InputGroup from "@/components/Common/Dashboard/InputGroup";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { BrandLogo } from "@/components/Common/BrandLogo";
+import { Button, Card, CardContent, Input } from "@/components/Common/UI";
 import axios from "axios";
-import { integrations, messages } from "../../../../integrations.config";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import z from "zod";
+import { integrations, messages } from "../../../../integrations.config";
 
 const schema = z
 	.object({
@@ -27,38 +27,20 @@ const schema = z
 				message: "Password must contain at least one special character.",
 			}),
 
-		ReNewPassword: z
-			.string()
-			.min(8, {
-				message: "Password must be at least 8 characters long",
-			})
-			.refine((val) => /[A-Z]/.test(val), {
-				message: "Password must contain at least one uppercase letter.",
-			})
-			.refine((val) => /[a-z]/.test(val), {
-				message: "Password must contain at least one lowercase letter.",
-			})
-			.refine((val) => /\d/.test(val), {
-				message: "Password must contain at least one number.",
-			})
-			.refine((val) => /[@$!%*?&]/.test(val), {
-				message: "Password must contain at least one special character.",
-			}),
+		confirmPassword: z.string().min(8, {
+			message: "Password must be at least 8 characters long",
+		}),
 	})
-	.refine((data) => data.newPassword === data.ReNewPassword, {
+	.refine((data) => data.newPassword === data.confirmPassword, {
 		message: "Passwords do not match.",
-		path: ["ReNewPassword"], // Set the path to show the error under ReNewPassword
+		path: ["confirmPassword"],
 	});
+
 export default function ResetPassword({ token }: { token: string }) {
-	const [data, setData] = useState({
-		newPassword: "",
-		ReNewPassword: "",
-	});
-
-	const [user, setUser] = useState({
-		email: "",
-	});
-
+	const [newPassword, setNewPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [email, setEmail] = useState("");
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -69,12 +51,14 @@ export default function ResetPassword({ token }: { token: string }) {
 				});
 
 				if (res.status === 200) {
-					setUser({
-						email: res.data.email,
-					});
+					setEmail(res.data.email);
 				}
 			} catch (error: any) {
-				toast.error(error.response.data);
+				const errMsg =
+					error?.response?.data || "Password reset link is invalid or expired.";
+				toast.error(
+					typeof errMsg === "string" ? errMsg : "Invalid reset token."
+				);
 				router.push("/auth/forgot-password");
 			}
 		};
@@ -82,16 +66,7 @@ export default function ResetPassword({ token }: { token: string }) {
 		if (integrations.isAuthEnabled) {
 			verifyToken();
 		}
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [token]);
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setData({
-			...data,
-			[e.target.name]: e.target.value,
-		});
-	};
+	}, [token, router]);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -100,7 +75,7 @@ export default function ResetPassword({ token }: { token: string }) {
 			return toast.error(messages.auth);
 		}
 
-		const result = schema.safeParse(data);
+		const result = schema.safeParse({ newPassword, confirmPassword });
 
 		if (!result.success) {
 			toast.error(result.error.issues[0].message);
@@ -108,68 +83,94 @@ export default function ResetPassword({ token }: { token: string }) {
 		}
 
 		try {
+			setLoading(true);
 			const res = await axios.post(`/api/forgot-password/update`, {
-				email: user?.email,
-				password: data.newPassword,
+				email,
+				password: newPassword,
 			});
 
 			if (res.status === 200) {
-				toast.success(res.data);
-				setData({ newPassword: "", ReNewPassword: "" });
+				toast.success(
+					typeof res.data === "string"
+						? res.data
+						: "Password updated successfully! Please sign in."
+				);
 				router.push("/auth/signin");
 			}
 		} catch (error: any) {
-			toast.error(error.response.data);
+			const errMsg =
+				error?.response?.data || "Unable to update password. Please try again.";
+			toast.error(
+				typeof errMsg === "string" ? errMsg : "Password update failed."
+			);
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	return (
-		<>
-			<div className='mx-auto w-full max-w-[400px] pb-20 pt-40'>
-				<div className='mb-7.5 text-center'>
-					<h3 className='mb-4 font-satoshi text-heading-5 font-bold text-dark dark:text-white'>
-						Create New Password
-					</h3>
-					<p className='text-base dark:text-gray-5'>
-						Create new password to save your account
-					</p>
-				</div>
-
-				<form onSubmit={handleSubmit}>
-					<div className='mb-5 space-y-4.5'>
-						<InputGroup
-							label='New password'
-							placeholder='Password'
-							type='password'
-							name='newPassword'
-							height='50px'
-							handleChange={handleChange}
-							value={data.newPassword}
-						/>
-						<InputGroup
-							label='Re-type new password'
-							placeholder='Password'
-							type='password'
-							name='ReNewPassword'
-							height='50px'
-							handleChange={handleChange}
-							value={data.ReNewPassword}
-						/>
-
-						<FormButton height='50px'>Create Password</FormButton>
+		<div className='flex min-h-[calc(100vh-160px)] items-center justify-center px-4 py-12 sm:px-6'>
+			<Card className='w-full max-w-md border-slate-200/80 shadow-md dark:border-slate-800'>
+				<CardContent className='p-6 sm:p-8'>
+					<div className='text-center'>
+						<div className='flex justify-center'>
+							<BrandLogo />
+						</div>
+						<h2 className='mt-6 text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl'>
+							Set New Password
+						</h2>
+						<p className='mt-1.5 text-xs text-slate-500 dark:text-slate-400 sm:text-sm'>
+							Create a strong, new password for your owner account.
+						</p>
 					</div>
 
-					<p className='text-center font-satoshi text-base font-medium text-dark dark:text-white'>
-						Already have an account?{" "}
+					<form onSubmit={handleSubmit} className='mt-7 space-y-4'>
+						<Input
+							label='New Password'
+							id='newPassword'
+							name='newPassword'
+							type='password'
+							required
+							placeholder='At least 8 characters'
+							value={newPassword}
+							onChange={(e) => setNewPassword(e.target.value)}
+							autoComplete='new-password'
+						/>
+
+						<Input
+							label='Confirm New Password'
+							id='confirmPassword'
+							name='confirmPassword'
+							type='password'
+							required
+							placeholder='Re-enter your new password'
+							value={confirmPassword}
+							onChange={(e) => setConfirmPassword(e.target.value)}
+							autoComplete='new-password'
+						/>
+
+						<Button
+							type='submit'
+							variant='primary'
+							size='lg'
+							isLoading={loading}
+							className='mt-2 w-full'
+						>
+							Update Password
+						</Button>
+					</form>
+
+					<div className='mt-6 border-t border-slate-100 pt-5 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400 sm:text-sm'>
+						<span>Remember your password? </span>
 						<Link
 							href='/auth/signin'
-							className='ml-1 inline-block text-primary'
+							className='font-semibold text-slate-900 hover:underline dark:text-white'
 						>
-							Sign In →
+							Back to Sign In →
 						</Link>
-					</p>
-				</form>
-			</div>
-		</>
+					</div>
+				</CardContent>
+			</Card>
+		</div>
 	);
 }

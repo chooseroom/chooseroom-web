@@ -22,7 +22,7 @@ const Dropdown = ({
 		<div className='group relative'>
 			<button
 				onClick={() => setDropdown(!dropdown)}
-				className='flex w-full items-center justify-between gap-1.5 rounded-full px-[14px] py-[3px] font-satoshi font-medium text-dark group-hover:bg-primary/5 group-hover:text-primary dark:text-gray-5 dark:group-hover:bg-white/5 dark:group-hover:text-white'
+				className='group-hover:bg-[#059669]/8 flex w-full items-center justify-between gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium text-[#2D3732] transition-all duration-200 group-hover:text-[#059669] dark:text-slate-300 dark:group-hover:bg-white/10 dark:group-hover:text-white'
 			>
 				{t("pages")}
 				<svg
@@ -57,9 +57,9 @@ const Dropdown = ({
 									setNavbarOpen(false);
 								}}
 								href={item?.path}
-								className={`flex rounded-[5px] px-4.5 py-[11px] text-dark duration-300 hover:bg-primary hover:text-white dark:text-gray-5 dark:hover:text-white ${
+								className={`flex rounded-lg px-4 py-2 text-sm text-[#2D3732] duration-200 hover:bg-[#059669]/10 hover:text-[#059669] dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white ${
 									pathname === item?.path
-										? "bg-primary text-white dark:text-white"
+										? "bg-[#059669]/10 font-semibold text-[#059669] dark:bg-white/10 dark:text-white"
 										: ""
 								}`}
 							>

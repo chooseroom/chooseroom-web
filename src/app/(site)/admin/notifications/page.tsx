@@ -14,7 +14,9 @@ const NotificationPage = () => {
 	return (
 		<>
 			<Breadcrumb pageTitle='Notifications' />
-			{data?.map((data) => <Notification key={data} />)}
+			{data?.map((data) => (
+				<Notification key={data} />
+			))}
 		</>
 	);
 };

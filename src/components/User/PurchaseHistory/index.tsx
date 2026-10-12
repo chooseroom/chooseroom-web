@@ -31,4 +31,4 @@ export default function PurchaseHistory({ user }: PropsType) {
 	};
 
 	return isSubscribed ? <PurchaseTable data={data} /> : <PurchaseEmptyState />;
-};
+}

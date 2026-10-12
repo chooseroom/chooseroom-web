@@ -28,7 +28,6 @@ export async function POST(request: Request) {
 		);
 	}
 
-
 	const resetToken = crypto.randomBytes(20).toString("hex");
 
 	const passwordResetTokenExp = new Date();

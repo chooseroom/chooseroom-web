@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-export function getPricingData() {
+export function usePricingData() {
 	const t = useTranslations("homepage.pricing_section");
 	const pricingPlans = t.raw("plans");
 
@@ -42,3 +42,5 @@ export function getPricingData() {
 		},
 	];
 }
+
+export const getPricingData = usePricingData;

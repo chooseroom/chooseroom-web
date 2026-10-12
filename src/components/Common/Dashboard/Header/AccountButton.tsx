@@ -1,45 +1,94 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
+import { useEffect, useRef, useState } from "react";
 import AccountMenu from "../../AccountMenu";
 
 export default function AccountButton({ user }: any) {
-	const profilePic = user?.image
-		? user.image.includes("http")
+	const [isOpen, setIsOpen] = useState(false);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	const hasCustomImage =
+		user?.image &&
+		!user.image.includes("profile-avatar.png") &&
+		(user.image.startsWith("http") || user.image.startsWith("/"));
+
+	const profilePic = hasCustomImage
+		? user.image.startsWith("http")
 			? user.image
-			: `${process.env.NEXT_PUBLIC_IMAGE_URL}/${user.image}`
-		: "/images/dashboard/profile-avatar.png";
+			: `${process.env.NEXT_PUBLIC_IMAGE_URL || ""}/${user.image}`
+		: null;
+
+	const initial = (user?.name?.[0] || user?.email?.[0] || "U").toUpperCase();
+
+	// Close on click outside
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setIsOpen(false);
+			}
+		}
+
+		if (isOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [isOpen]);
 
 	return (
-		<div className='group relative flex items-center'>
-			<div className='flex items-center gap-4'>
-				<img
-					src={profilePic}
-					alt='profile name'
-					className='h-[48px] w-[48px] overflow-hidden rounded-full'
-				/>
-				<p className='font-satoshi text-base font-medium capitalize text-dark dark:text-white'>
-					{user?.name}
-				</p>
+		<div ref={dropdownRef} className='relative'>
+			<button
+				type='button'
+				onClick={() => setIsOpen((prev) => !prev)}
+				className='flex items-center gap-3 rounded-xl p-1.5 transition-colors hover:bg-slate-100 focus:outline-none dark:hover:bg-white/5'
+				aria-expanded={isOpen}
+			>
+				{profilePic ? (
+					<img
+						src={profilePic}
+						alt={user?.name || "profile"}
+						className='size-10 overflow-hidden rounded-full object-cover ring-2 ring-emerald-500/20'
+					/>
+				) : (
+					<div className='flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-[#1A382B] to-[#10B981] font-satoshi text-sm font-bold text-white shadow-sm ring-2 ring-emerald-500/20'>
+						{initial}
+					</div>
+				)}
+
+				<span className='hidden font-satoshi text-sm font-semibold capitalize text-dark dark:text-white sm:inline-block'>
+					{user?.name || "User"}
+				</span>
 
 				<svg
-					className='group-hover:rotate-180'
-					width='19'
-					height='18'
-					viewBox='0 0 19 18'
+					className={`text-slate-500 transition-transform duration-200 dark:text-slate-400 ${
+						isOpen ? "rotate-180" : ""
+					}`}
+					width='16'
+					height='16'
+					viewBox='0 0 20 20'
 					fill='none'
 					xmlns='http://www.w3.org/2000/svg'
 				>
 					<path
 						fillRule='evenodd'
 						clipRule='evenodd'
-						d='M4.29314 6.38394C4.49532 6.14807 4.85042 6.12075 5.0863 6.32293L9.97022 10.5092L14.8542 6.32293C15.09 6.12075 15.4451 6.14807 15.6473 6.38394C15.8495 6.61981 15.8222 6.97492 15.5863 7.17709L10.3363 11.6771C10.1256 11.8576 9.8148 11.8576 9.60415 11.6771L4.35415 7.17709C4.11828 6.97492 4.09097 6.61981 4.29314 6.38394Z'
+						d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
 						fill='currentColor'
 					/>
 				</svg>
-			</div>
+			</button>
 
-			<div className='shadow-3 border-[.5px]border-stroke invisible absolute right-0 top-15 z-999 w-[280px] rounded-lg bg-white pb-2.5 pt-3.5 opacity-0 shadow-md duration-500 group-hover:visible group-hover:translate-y-2 group-hover:opacity-100 dark:bg-gray-dark'>
-				<AccountMenu user={user} />
-			</div>
+			{/* Dropdown Menu */}
+			{isOpen && (
+				<div className='absolute right-0 top-full z-[9999] mt-2 w-[280px] rounded-2xl border border-[#E8E3D8] bg-white pb-2 pt-2.5 shadow-2xl shadow-black/10 transition-all dark:border-[#1E382B] dark:bg-[#071711]'>
+					<AccountMenu user={user} onClose={() => setIsOpen(false)} />
+				</div>
+			)}
 		</div>
 	);
 }

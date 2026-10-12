@@ -7,8 +7,6 @@ const trackers: Record<string, { count: number; expiresAt: number }> = {};
 export async function rateLimitByIp(limit = 1, windowMs = 10000) {
 	const ip = await getIp();
 
-	console.log(trackers);
-
 	if (!ip) {
 		throw new Error("IP address not found");
 	}

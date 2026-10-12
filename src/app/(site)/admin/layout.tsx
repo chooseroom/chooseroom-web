@@ -11,9 +11,9 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 	const [openSidebar, setOpenSidebar] = useState(false);
 	return (
 		<>
-			<main className='min-h-screen bg-gray-2 dark:bg-[#151F34]'>
+			<main className='min-h-screen bg-[#FBF9F5] dark:bg-[#0E1713]'>
 				<aside
-					className={`fixed left-0 top-0 z-[999] h-screen w-[290px] overflow-y-auto bg-white duration-300 dark:bg-gray-dark ${
+					className={`fixed left-0 top-0 z-[999] h-screen w-[290px] overflow-y-auto border-r border-[#E8E3D8] bg-white duration-300 dark:border-slate-800 dark:bg-[#071711] ${
 						openSidebar ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
 					}`}
 				>
@@ -30,7 +30,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 				></div>
 				<section className='lg:ml-[290px]'>
 					<Header openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
-					<div className='p-5 pt-12 md:p-10'>{children}</div>
+					<div className='p-4 sm:p-6 lg:p-8'>{children}</div>
 				</section>
 			</main>
 		</>

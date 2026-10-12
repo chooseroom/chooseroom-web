@@ -1,30 +1,23 @@
+import React from "react";
 import Hero from "./Hero";
+import { PainPoints } from "./PainPoints";
 import Features from "./Features";
-import FeaturesWithImage from "./FeaturesWithImage";
-import Counter from "./Counter";
-import CallToAction from "./CallToAction";
-import Testimonials from "./Testimonials";
-import Pricing from "./Pricing";
+import { Roadmap } from "./Roadmap";
+import HowItWorks from "./HowItWorks";
 import FAQ from "./FAQ";
-import Blog from "./Blog";
-import Newsletter from "./Newsletter";
-
-import { integrations } from "../../../integrations.config";
+import CTA from "./CTA";
 
 const Home = () => {
 	return (
-		<>
+		<main className='min-h-screen bg-[#FBF9F5] dark:bg-[#0E1713]'>
 			<Hero />
+			<PainPoints />
 			<Features />
-			<FeaturesWithImage />
-			<Counter />
-			<CallToAction />
-			<Testimonials />
-			<Pricing />
+			<Roadmap />
+			<HowItWorks />
 			<FAQ />
-			<Newsletter />
-			{integrations?.isSanityEnabled && <Blog />}
-		</>
+			<CTA />
+		</main>
 	);
 };
 

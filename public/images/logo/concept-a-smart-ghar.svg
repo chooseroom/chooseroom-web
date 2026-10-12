@@ -1,0 +1,23 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept A: Smart Ghar Portal (Architectural Shelter & Organized Spaces) -->
+  <rect width="200" height="200" rx="44" fill="#0B2B20"/>
+  <rect x="3" y="3" width="194" height="194" rx="41" stroke="#1B4D3A" stroke-width="6"/>
+  
+  <!-- Architectural Roof Lintel -->
+  <path d="M100 38L158 74V88L100 52L42 88V74L100 38Z" fill="#E5A83B"/>
+  
+  <!-- Main Structural Shelter Body -->
+  <path d="M52 92H148V162H122V116C122 108.268 115.732 102 108 102H92C84.268 102 78 108.268 78 116V162H52V92Z" fill="#FFFFFF"/>
+  
+  <!-- Modular Room Compartment Left -->
+  <rect x="64" y="104" width="22" height="22" rx="4" fill="#0B2B20" fill-opacity="0.12"/>
+  <rect x="68" y="108" width="14" height="14" rx="2" fill="#34D399"/>
+  
+  <!-- Modular Room Compartment Right -->
+  <rect x="114" y="104" width="22" height="22" rx="4" fill="#0B2B20" fill-opacity="0.12"/>
+  <rect x="118" y="108" width="14" height="14" rx="2" fill="#34D399"/>
+  
+  <!-- Central Warm Hearth Beacon (Occupancy / Welcome) -->
+  <circle cx="100" cy="128" r="8" fill="#E5A83B"/>
+  <path d="M100 136V162" stroke="#E5A83B" stroke-width="4" stroke-linecap="round"/>
+</svg>

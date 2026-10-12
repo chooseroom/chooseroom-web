@@ -1,25 +1,20 @@
 "use client";
-import { toast } from "react-hot-toast";
-import { useState } from "react";
-import Link from "next/link";
-import FormButton from "@/components/Common/Dashboard/FormButton";
-import InputGroup from "@/components/Common/Dashboard/InputGroup";
+import { BrandLogo } from "@/components/Common/BrandLogo";
+import { Button, Card, CardContent, Input } from "@/components/Common/UI";
 import axios from "axios";
-import Loader from "@/components/Common/Loader";
-import { integrations, messages } from "../../../../integrations.config";
+import Link from "next/link";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 import z from "zod";
+import { integrations, messages } from "../../../../integrations.config";
 
 const schema = z.object({
-	email: z.string().email(),
+	email: z.string().email({ message: "Please enter a valid email address." }),
 });
 
 export default function ForgotPassword() {
 	const [email, setEmail] = useState("");
 	const [loading, setLoading] = useState(false);
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setEmail(e.target.value);
-	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -42,73 +37,81 @@ export default function ForgotPassword() {
 			});
 
 			if (res.status === 404) {
-				toast.error("User not found.");
-				setEmail("");
-				setLoading(false);
+				toast.error("No account found with this email.");
 				return;
 			}
 
 			if (res.status === 200) {
-				toast.success(res.data);
-				setLoading(false);
+				toast.success(
+					typeof res.data === "string"
+						? res.data
+						: "Password reset link has been sent to your email."
+				);
 				setEmail("");
 			}
-
-			setEmail("");
 		} catch (error: any) {
+			const errMsg =
+				error?.response?.data || "Unable to send reset link. Please try again.";
+			toast.error(
+				typeof errMsg === "string" ? errMsg : "Failed to send reset link."
+			);
+		} finally {
 			setLoading(false);
-			toast.error(error.response.data);
 		}
 	};
+
 	return (
-		<>
-			<div className='mx-auto w-full max-w-[400px] py-10'>
-				<div className='mb-7.5 text-center'>
-					<h3 className='mb-4 font-satoshi text-heading-5 font-bold text-dark dark:text-white'>
-						Forgot Password?
-					</h3>
-					<p className='text-base dark:text-gray-5'>
-						Enter your email address we&#39;ll send you a link to reset your
-						password.
-					</p>
-				</div>
-
-				<form onSubmit={handleSubmit}>
-					<div className='mb-5 space-y-4.5'>
-						<InputGroup
-							label='Email'
-							placeholder='Enter your email'
-							type='email'
-							name='email'
-							height='50px'
-							handleChange={handleChange}
-							value={email}
-						/>
-
-						<FormButton height='50px'>
-							{" "}
-							{loading ? (
-								<>
-									Sending
-									<Loader style='border-white dark:border-dark' />
-								</>
-							) : (
-								"Send Reset Link"
-							)}
-						</FormButton>
+		<div className='flex min-h-[calc(100vh-160px)] items-center justify-center px-4 py-12 sm:px-6'>
+			<Card className='w-full max-w-md border-slate-200/80 shadow-md dark:border-slate-800'>
+				<CardContent className='p-6 sm:p-8'>
+					<div className='text-center'>
+						<div className='flex justify-center'>
+							<BrandLogo />
+						</div>
+						<h2 className='mt-6 text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl'>
+							Reset Password
+						</h2>
+						<p className='mt-1.5 text-xs text-slate-500 dark:text-slate-400 sm:text-sm'>
+							Enter your registered email address to receive a secure recovery
+							link.
+						</p>
 					</div>
 
-					<p className='text-center font-satoshi text-base font-medium text-dark dark:text-white'>
-						Already have an account?{" "}
+					<form onSubmit={handleSubmit} className='mt-7 space-y-4'>
+						<Input
+							label='Email Address'
+							id='email'
+							name='email'
+							type='email'
+							required
+							placeholder='owner@example.com'
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							autoComplete='email'
+						/>
+
+						<Button
+							type='submit'
+							variant='primary'
+							size='lg'
+							isLoading={loading}
+							className='mt-2 w-full'
+						>
+							Send Reset Link
+						</Button>
+					</form>
+
+					<div className='mt-6 border-t border-slate-100 pt-5 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400 sm:text-sm'>
+						<span>Remembered your password? </span>
 						<Link
 							href='/auth/signin'
-							className='ml-1 inline-block text-primary'
+							className='font-semibold text-slate-900 hover:underline dark:text-white'
 						>
-							Sign In →
+							Back to Sign In →
 						</Link>
-					</p>
-				</form>
-			</div>
-		</>
+					</div>
+				</CardContent>
+			</Card>
+		</div>
 	);
 }
