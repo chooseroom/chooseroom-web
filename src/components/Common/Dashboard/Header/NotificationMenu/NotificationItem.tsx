@@ -161,7 +161,7 @@ export default function NotificationItem({
 				onClick={onDismiss}
 				title='Dismiss notification'
 				aria-label='Dismiss notification'
-				className='absolute right-2 top-2 rounded p-1 text-slate-400 opacity-0 transition hover:bg-slate-200 hover:text-slate-600 group-hover:opacity-100 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300 sm:right-2.5 sm:top-2.5'
+				className='absolute right-2 top-2 rounded p-1 text-slate-400 opacity-60 transition hover:bg-slate-200 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300 sm:right-2.5 sm:top-2.5 sm:opacity-0 sm:group-hover:opacity-100'
 			>
 				<svg
 					className='h-3.5 w-3.5'

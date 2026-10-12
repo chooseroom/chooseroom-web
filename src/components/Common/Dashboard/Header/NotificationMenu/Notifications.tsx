@@ -182,120 +182,129 @@ export default function Notifications({ role }: { role?: string }) {
 
 			{/* Dropdown Popup - Completely Responsive on Mobile, Tablet & Desktop */}
 			{isOpen && (
-				<div
-					role='region'
-					aria-label='Notifications list'
-					className='absolute right-0 top-full z-99999 mt-2.5 w-[calc(100vw-1.5rem)] max-w-[380px] origin-top-right rounded-xl border border-slate-200/90 bg-white shadow-xl dark:border-slate-800 dark:bg-gray-dark dark:shadow-2xl sm:w-[400px]'
-				>
-					{/* Dropdown Top Bar */}
-					<div className='flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-800'>
-						<div className='flex items-center gap-2'>
-							<h3 className='font-satoshi text-sm font-bold text-slate-900 dark:text-white sm:text-base'>
-								Notifications
-							</h3>
+				<>
+					{/* Mobile Backdrop Overlay to dismiss on tap */}
+					<div
+						className='z-99990 fixed inset-0 bg-black/25 backdrop-blur-[1px] sm:hidden'
+						onClick={() => setIsOpen(false)}
+						aria-hidden='true'
+					/>
+
+					<div
+						role='region'
+						aria-label='Notifications list'
+						className='fixed inset-x-3 top-[60px] z-99999 max-h-[calc(100vh-5rem)] origin-top rounded-xl border border-slate-200/90 bg-white shadow-2xl dark:border-slate-800 dark:bg-gray-dark dark:shadow-2xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2.5 sm:max-h-[480px] sm:w-[390px] sm:origin-top-right'
+					>
+						{/* Dropdown Top Bar */}
+						<div className='flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-800'>
+							<div className='flex items-center gap-2'>
+								<h3 className='font-satoshi text-sm font-bold text-slate-900 dark:text-white sm:text-base'>
+									Notifications
+								</h3>
+								{unreadCount > 0 && (
+									<span className='rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary dark:bg-primary/20'>
+										{unreadCount} new
+									</span>
+								)}
+							</div>
+
 							{unreadCount > 0 && (
-								<span className='rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary dark:bg-primary/20'>
-									{unreadCount} new
-								</span>
+								<button
+									type='button'
+									onClick={handleMarkAllRead}
+									className='dark:text-primary-light text-xs font-medium text-primary transition hover:underline'
+								>
+									Mark all read
+								</button>
 							)}
 						</div>
 
-						{unreadCount > 0 && (
+						{/* Tab Filters */}
+						<div className='flex border-b border-slate-100 px-3 pt-2 dark:border-slate-800'>
 							<button
 								type='button'
-								onClick={handleMarkAllRead}
-								className='dark:text-primary-light text-xs font-medium text-primary transition hover:underline'
+								onClick={() => setActiveTab("all")}
+								className={`relative px-3 pb-2 text-xs font-semibold transition ${
+									activeTab === "all"
+										? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+										: "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+								}`}
 							>
-								Mark all read
+								All ({visibleNotifications.length})
 							</button>
-						)}
-					</div>
+							<button
+								type='button'
+								onClick={() => setActiveTab("unread")}
+								className={`relative px-3 pb-2 text-xs font-semibold transition ${
+									activeTab === "unread"
+										? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+										: "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+								}`}
+							>
+								Unread ({unreadCount})
+							</button>
+						</div>
 
-					{/* Tab Filters */}
-					<div className='flex border-b border-slate-100 px-3 pt-2 dark:border-slate-800'>
-						<button
-							type='button'
-							onClick={() => setActiveTab("all")}
-							className={`relative px-3 pb-2 text-xs font-semibold transition ${
-								activeTab === "all"
-									? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
-									: "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-							}`}
-						>
-							All ({visibleNotifications.length})
-						</button>
-						<button
-							type='button'
-							onClick={() => setActiveTab("unread")}
-							className={`relative px-3 pb-2 text-xs font-semibold transition ${
-								activeTab === "unread"
-									? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
-									: "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-							}`}
-						>
-							Unread ({unreadCount})
-						</button>
-					</div>
-
-					{/* Scrollable Notification List */}
-					<div className='scrollbar-thin max-h-[340px] overflow-y-auto p-2 sm:max-h-[380px]'>
-						{loading && notifications.length === 0 ? (
-							<div className='flex items-center justify-center py-8 text-xs text-slate-400'>
-								<div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
-								Loading updates...
-							</div>
-						) : displayedList.length === 0 ? (
-							<div className='py-8 text-center'>
-								<div className='mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'>
-									<svg
-										className='h-5 w-5'
-										fill='none'
-										viewBox='0 0 24 24'
-										stroke='currentColor'
-									>
-										<path
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											strokeWidth={1.5}
-											d='M5 13l4 4L19 7'
-										/>
-									</svg>
+						{/* Scrollable Notification List */}
+						<div className='scrollbar-thin max-h-[340px] overflow-y-auto p-2 sm:max-h-[380px]'>
+							{loading && notifications.length === 0 ? (
+								<div className='flex items-center justify-center py-8 text-xs text-slate-400'>
+									<div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+									Loading updates...
 								</div>
-								<p className='text-xs font-semibold text-slate-700 dark:text-slate-300'>
-									All caught up!
-								</p>
-								<p className='mt-0.5 text-[11px] text-slate-400'>
-									{activeTab === "unread"
-										? "No unread notifications right now."
-										: "No notifications found."}
-								</p>
-							</div>
-						) : (
-							<div className='space-y-1'>
-								{displayedList.map((item) => (
-									<NotificationItem
-										key={item.id}
-										notification={item}
-										isRead={readIds.includes(item.id)}
-										onItemClick={() => handleMarkRead(item.id)}
-										onDismiss={(e) => handleDismiss(e, item.id)}
-									/>
-								))}
-							</div>
-						)}
-					</div>
+							) : displayedList.length === 0 ? (
+								<div className='py-8 text-center'>
+									<div className='mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'>
+										<svg
+											className='h-5 w-5'
+											fill='none'
+											viewBox='0 0 24 24'
+											stroke='currentColor'
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												strokeWidth={1.5}
+												d='M5 13l4 4L19 7'
+											/>
+										</svg>
+									</div>
+									<p className='text-xs font-semibold text-slate-700 dark:text-slate-300'>
+										All caught up!
+									</p>
+									<p className='mt-0.5 text-[11px] text-slate-400'>
+										{activeTab === "unread"
+											? "No unread notifications right now."
+											: "No notifications found."}
+									</p>
+								</div>
+							) : (
+								<div className='space-y-1'>
+									{displayedList.map((item) => (
+										<NotificationItem
+											key={item.id}
+											notification={item}
+											isRead={readIds.includes(item.id)}
+											onItemClick={() => handleMarkRead(item.id)}
+											onDismiss={(e) => handleDismiss(e, item.id)}
+										/>
+									))}
+								</div>
+							)}
+						</div>
 
-					{/* Footer Link */}
-					<div className='border-t border-slate-100 p-2.5 dark:border-slate-800'>
-						<Link
-							href={targetNotificationsUrl}
-							onClick={() => setIsOpen(false)}
-							className='flex w-full items-center justify-center rounded-lg bg-slate-50 py-2 text-center text-xs font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-primary dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-[13px]'
-						>
-							See All Notifications
-						</Link>
+						{/* Footer Link */}
+						<div className='border-t border-slate-100 p-2.5 dark:border-slate-800'>
+							<Link
+								href={targetNotificationsUrl}
+								onClick={() => setIsOpen(false)}
+								className='flex w-full items-center justify-center rounded-lg bg-slate-50 py-2 text-center text-xs font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-primary dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-[13px]'
+							>
+								See All Notifications
+							</Link>
+						</div>
 					</div>
-				</div>
+				</>
 			)}
 		</div>
 	);
