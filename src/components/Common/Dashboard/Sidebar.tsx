@@ -34,29 +34,40 @@ export default function Sidebar({
 							{sidebarData &&
 								sidebarData?.map((item: any, key: number) => (
 									<li key={key}>
-										<Link
-											href={item?.path}
-											className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 font-satoshi font-medium duration-300 ${
-												pathname === `${item.path}`
-													? "bg-primary bg-opacity-10 text-primary dark:bg-white dark:bg-opacity-10 dark:text-white"
-													: "text-dark hover:bg-primary hover:bg-opacity-10 hover:text-primary dark:text-gray-5 dark:hover:bg-white dark:hover:bg-opacity-10 dark:hover:text-white"
-											}`}
-										>
-											<span className='h-[24px] w-[24px]'>{item?.icon}</span>
-
-											<span className='flex-1 truncate'>
-												{item?.title ||
-													(item?.titleKey ? t(item?.titleKey) : "")}
-											</span>
-
-											{item?.comingSoon && (
-												<span className='ml-auto rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+										{item?.comingSoon ? (
+											<div
+												className='flex w-full cursor-not-allowed select-none items-center gap-3 rounded-lg px-3.5 py-3 font-satoshi font-medium text-slate-400 dark:text-slate-500'
+												title={`${item?.title || "This module"} is in active development (${item.comingSoon})`}
+											>
+												<span className='h-[24px] w-[24px] opacity-60'>
+													{item?.icon}
+												</span>
+												<span className='flex-1 truncate'>
+													{item?.title ||
+														(item?.titleKey ? t(item?.titleKey) : "")}
+												</span>
+												<span className='ml-auto rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400'>
 													{typeof item.comingSoon === "string"
 														? item.comingSoon
 														: "Planned"}
 												</span>
-											)}
-										</Link>
+											</div>
+										) : (
+											<Link
+												href={item?.path}
+												className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 font-satoshi font-medium duration-300 ${
+													pathname === `${item.path}`
+														? "bg-primary bg-opacity-10 text-primary dark:bg-white dark:bg-opacity-10 dark:text-white"
+														: "text-dark hover:bg-primary hover:bg-opacity-10 hover:text-primary dark:text-gray-5 dark:hover:bg-white dark:hover:bg-opacity-10 dark:hover:text-white"
+												}`}
+											>
+												<span className='h-[24px] w-[24px]'>{item?.icon}</span>
+												<span className='flex-1 truncate'>
+													{item?.title ||
+														(item?.titleKey ? t(item?.titleKey) : "")}
+												</span>
+											</Link>
+										)}
 									</li>
 								))}
 						</ul>

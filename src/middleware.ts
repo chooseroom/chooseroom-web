@@ -19,9 +19,10 @@ export default withAuth(
 		// 2. Strict Super Admin protection: Only ADMIN role can access /admin
 		if (pathname.startsWith("/admin")) {
 			if (!isAdmin) {
-				// Business owners trying to access admin panel are redirected to their owner portal
+				// Business owners trying to access admin panel are redirected to their portal
 				if (isOwner) {
-					return NextResponse.redirect(new URL("/user", req.url));
+					const target = token?.setupCompleted ? "/user" : "/user/setup";
+					return NextResponse.redirect(new URL(target, req.url));
 				}
 				return NextResponse.redirect(new URL("/auth/signin", req.url));
 			}
@@ -34,6 +35,17 @@ export default withAuth(
 			}
 			if (!isOwner) {
 				return NextResponse.redirect(new URL("/auth/signin", req.url));
+			}
+
+			// Incomplete onboarding setup enforcement
+			const isSetupRoute = pathname.startsWith("/user/setup");
+			if (!token?.setupCompleted && !isSetupRoute) {
+				return NextResponse.redirect(new URL("/user/setup", req.url));
+			}
+
+			// Completed owners cannot re-enter the first-time setup wizard
+			if (token?.setupCompleted && isSetupRoute) {
+				return NextResponse.redirect(new URL("/user", req.url));
 			}
 		}
 

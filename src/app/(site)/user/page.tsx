@@ -1,47 +1,106 @@
-import {
-	Badge,
-	Button,
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/Common/UI";
+import { Badge, Button, Card, CardContent } from "@/components/Common/UI";
 import { getAuthSession } from "@/libs/auth";
-import { formatINR } from "@/libs/formatters";
+import { formatIndianMobile, formatINR } from "@/libs/formatters";
+import { prisma } from "@/libs/prismaDb";
 import { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
 	title: "Owner Dashboard",
-	description: "Operations dashboard for Indian PG and hostel owners.",
+	description: "Operations dashboard for Choose Ghar PG and hostel owners.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function OwnerDashboardPage() {
+	// 1. Authoritative session verification
 	const session = await getAuthSession();
-	if (session?.user?.role === "ADMIN") {
+	if (!session?.user?.id) {
+		redirect("/auth/signin");
+	}
+
+	// 2. Strict Role Segregation: Admins belong exclusively in /admin
+	if (session.user.role === "ADMIN") {
 		redirect("/admin");
 	}
 
+	// 3. Query authoritative user and properties from database
+	const dbUser = await prisma.user.findUnique({
+		where: { id: session.user.id },
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			phone: true,
+			role: true,
+			status: true,
+			setupCompleted: true,
+			properties: {
+				orderBy: { createdAt: "desc" },
+			},
+		},
+	});
+
+	if (!dbUser) {
+		redirect("/auth/signin");
+	}
+
+	if (dbUser.status === "SUSPENDED") {
+		redirect("/auth/signin?error=AccountSuspended");
+	}
+
+	// 4. Incomplete setup guard: If setup is pending or no property exists, force to /user/setup
+	if (!dbUser.setupCompleted || dbUser.properties.length === 0) {
+		redirect("/user/setup");
+	}
+
+	const activeProperty = dbUser.properties[0];
+	const totalProperties = dbUser.properties.length;
+
+	const formatPropertyType = (t: string) => {
+		const typeLabels: Record<string, string> = {
+			PG: "PG",
+			HOSTEL: "Hostel",
+			BOTH: "Both PG & Hostel",
+		};
+		return typeLabels[t] || "Both PG & Hostel";
+	};
+
+	const formatGender = (g: string) => {
+		const genderLabels: Record<string, string> = {
+			BOYS: "Boys PG/Hostel",
+			GIRLS: "Girls PG/Hostel",
+			COED: "Co-ed PG/Hostel",
+		};
+		return genderLabels[g] || "Co-ed PG/Hostel";
+	};
+
 	return (
-		<div className='space-y-8'>
-			{/* Top Header & Context */}
+		<div className='space-y-6 sm:space-y-8'>
+			{/* Top Header & Property Context */}
 			<div className='flex flex-col justify-between gap-4 border-b border-stroke pb-6 dark:border-stroke-dark sm:flex-row sm:items-center'>
 				<div>
-					<div className='flex items-center gap-2.5'>
-						<h1 className='text-2xl font-bold tracking-tight text-dark dark:text-white sm:text-3xl'>
-							Operations Dashboard
+					<div className='flex flex-wrap items-center gap-2.5'>
+						<h1 className='font-satoshi text-2xl font-bold tracking-tight text-dark dark:text-white sm:text-3xl'>
+							{activeProperty.name}
 						</h1>
+						<Badge variant='success' size='sm'>
+							Active PG/Hostel
+						</Badge>
 						<Badge variant='neutral' size='sm'>
-							Phase C Design System
+							{formatPropertyType(activeProperty.type)}
+						</Badge>
+						<Badge variant='neutral' size='sm'>
+							{formatGender(activeProperty.gender)}
 						</Badge>
 					</div>
-					<p className='mt-1 text-sm text-body dark:text-gray-4'>
-						Overview of property occupancy, rooms, resident verification, and
-						operational workflow.
+					<p className='mt-1 text-xs text-body dark:text-gray-4 sm:text-sm'>
+						📍 {activeProperty.address}, {activeProperty.area},{" "}
+						{activeProperty.city}
 					</p>
 				</div>
+
 				<div className='flex flex-wrap items-center gap-3'>
 					<Link href='/user/account-settings'>
 						<Button variant='outline' size='sm'>
@@ -51,35 +110,36 @@ export default async function OwnerDashboardPage() {
 					<Button
 						variant='primary'
 						size='sm'
-						onClick={undefined}
-						title='Property creation will be operational in Phase E'
+						disabled
+						title='Additional property additions will be operational in Phase E'
 					>
-						+ Add Property (Phase E)
+						+ Add Another PG/Hostel (Phase E)
 					</Button>
 				</div>
 			</div>
 
-			{/* Operational Metrics Cards (India-First & Explicitly Illustrative) */}
+			{/* Operational Metrics Cards (Real Data Grounded) */}
 			<div>
 				<div className='mb-3 flex items-center justify-between'>
 					<h2 className='text-xs font-semibold uppercase tracking-wider text-body dark:text-gray-4'>
 						Key Operational Metrics
 					</h2>
-					<span className='rounded border border-emerald-200/50 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300'>
-						Illustrative preview • Live CRUD in Phase E
+					<span className='text-xs font-medium text-slate-500 dark:text-slate-400'>
+						Live Property Data
 					</span>
 				</div>
 
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+					{/* Total Properties */}
 					<Card>
 						<CardContent className='p-5'>
 							<div className='flex items-center justify-between'>
 								<span className='text-xs font-medium text-body dark:text-gray-4'>
-									Total Properties
+									Total PG/Hostel Properties
 								</span>
 								<span className='rounded-full bg-primary/10 p-2 text-primary'>
 									<svg
-										className='h-4 w-4'
+										className='size-4'
 										fill='none'
 										viewBox='0 0 24 24'
 										stroke='currentColor'
@@ -93,29 +153,67 @@ export default async function OwnerDashboardPage() {
 									</svg>
 								</span>
 							</div>
-							<div className='mt-2'>
-								<span className='text-2xl font-bold text-dark dark:text-white'>
-									1
+							<div className='mt-2 flex items-baseline gap-2'>
+								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
+									{totalProperties}
 								</span>
-								<span className='ml-2 text-xs text-body dark:text-gray-4'>
-									Active facility
+								<span className='text-xs text-body dark:text-gray-4'>
+									Registered facility
 								</span>
 							</div>
-							<p className='mt-2 text-xs text-body dark:text-gray-4'>
-								Sample property configured
+							<p className='mt-2 text-xs text-emerald-700 dark:text-emerald-400'>
+								Verified in {activeProperty.city}
 							</p>
 						</CardContent>
 					</Card>
 
+					{/* Total Rooms */}
 					<Card>
 						<CardContent className='p-5'>
 							<div className='flex items-center justify-between'>
 								<span className='text-xs font-medium text-body dark:text-gray-4'>
-									Total Bed Capacity
+									Total Configured Rooms
 								</span>
-								<span className='rounded-full bg-emerald-500/10 p-2 text-emerald-600 dark:text-emerald-400'>
+								<span className='rounded-full bg-slate-100 p-2 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
 									<svg
-										className='h-4 w-4'
+										className='size-4'
+										fill='none'
+										viewBox='0 0 24 24'
+										stroke='currentColor'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth='2'
+											d='M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z'
+										/>
+									</svg>
+								</span>
+							</div>
+							<div className='mt-2 flex items-baseline gap-2'>
+								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
+									0
+								</span>
+								<span className='text-xs text-body dark:text-gray-4'>
+									Rooms configured
+								</span>
+							</div>
+							<p className='mt-2 text-xs text-body dark:text-gray-4'>
+								Room layout setup in Phase E
+							</p>
+						</CardContent>
+					</Card>
+
+					{/* Bed Occupancy */}
+					<Card>
+						<CardContent className='p-5'>
+							<div className='flex items-center justify-between'>
+								<span className='text-xs font-medium text-body dark:text-gray-4'>
+									Bed Occupancy
+								</span>
+								<span className='rounded-full bg-slate-100 p-2 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+									<svg
+										className='size-4'
 										fill='none'
 										viewBox='0 0 24 24'
 										stroke='currentColor'
@@ -129,280 +227,271 @@ export default async function OwnerDashboardPage() {
 									</svg>
 								</span>
 							</div>
-							<div className='mt-2'>
-								<span className='text-2xl font-bold text-dark dark:text-white'>
-									36
-								</span>
-								<span className='ml-2 text-xs text-body dark:text-gray-4'>
-									Beds across 14 rooms
-								</span>
-							</div>
-							<p className='mt-2 text-xs text-body dark:text-gray-4'>
-								Single, Double & Triple sharing
-							</p>
-						</CardContent>
-					</Card>
-
-					<Card>
-						<CardContent className='p-5'>
-							<div className='flex items-center justify-between'>
-								<span className='text-xs font-medium text-body dark:text-gray-4'>
-									Current Occupancy
-								</span>
-								<span className='rounded-full bg-emerald-500/10 p-2 text-emerald-600'>
-									<svg
-										className='h-4 w-4'
-										fill='none'
-										viewBox='0 0 24 24'
-										stroke='currentColor'
-									>
-										<path
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											strokeWidth='2'
-											d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
-										/>
-									</svg>
-								</span>
-							</div>
 							<div className='mt-2 flex items-baseline gap-2'>
-								<span className='text-2xl font-bold text-dark dark:text-white'>
-									78%
+								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
+									0%
 								</span>
-								<Badge variant='occupied' size='sm'>
-									28 / 36 Beds
-								</Badge>
+								<span className='text-xs text-body dark:text-gray-4'>
+									0 / 0 Beds occupied
+								</span>
 							</div>
 							<p className='mt-2 text-xs text-body dark:text-gray-4'>
-								8 beds available for check-in
+								Ready for room allocations
 							</p>
 						</CardContent>
 					</Card>
 
+					{/* Monthly Rent Collection */}
 					<Card>
 						<CardContent className='p-5'>
 							<div className='flex items-center justify-between'>
 								<span className='text-xs font-medium text-body dark:text-gray-4'>
-									Monthly Rent Target
+									Monthly Rent Collections
 								</span>
 								<span className='rounded-full bg-amber-500/10 p-2 text-xs font-semibold text-amber-600'>
 									₹
 								</span>
 							</div>
-							<div className='mt-2'>
-								<span className='text-2xl font-bold text-dark dark:text-white'>
-									{formatINR(195000)}
+							<div className='mt-2 flex items-baseline gap-2'>
+								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
+									{formatINR(0)}
 								</span>
-								<span className='ml-2 text-xs text-body dark:text-gray-4'>
+								<span className='text-xs text-body dark:text-gray-4'>
 									/ month
 								</span>
 							</div>
 							<p className='mt-2 text-xs text-body dark:text-gray-4'>
-								Expected monthly collections
+								Rent ledger launches in Phase F
 							</p>
 						</CardContent>
 					</Card>
 				</div>
 			</div>
 
-			{/* Main Grid: Onboarding Checklist & Room Matrix Preview */}
+			{/* Main Grid: Real Property Identity & Modules Empty States */}
 			<div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
-				{/* Left 2 Cols: Room Matrix / Inventory Preview */}
+				{/* Left 2 Cols: Property Profile & Modules Empty State */}
 				<div className='space-y-6 lg:col-span-2'>
-					<Card>
-						<CardHeader className='border-b border-stroke pb-4 dark:border-stroke-dark'>
-							<div className='flex flex-wrap items-center justify-between gap-2'>
+					{/* Active Property Card */}
+					<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+						<CardContent className='p-5 sm:p-6'>
+							<div className='flex items-start justify-between'>
 								<div>
-									<CardTitle>Room Inventory & Occupancy Status</CardTitle>
-									<CardDescription>
-										Floor-wise room allocations and bed availability
-									</CardDescription>
+									<span className='text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400'>
+										Primary Facility Profile
+									</span>
+									<h3 className='mt-1 font-satoshi text-lg font-bold text-slate-900 dark:text-white sm:text-xl'>
+										{activeProperty.name}
+									</h3>
+									<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+										{activeProperty.address}, {activeProperty.area},{" "}
+										{activeProperty.city}
+									</p>
 								</div>
-								<div className='flex items-center gap-2'>
-									<Badge variant='available' size='sm'>
-										Available
-									</Badge>
-									<Badge variant='occupied' size='sm'>
-										Occupied
-									</Badge>
-									<Badge variant='maintenance' size='sm'>
-										Maintenance
-									</Badge>
+								<span className='flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1A382B] to-[#10B981] font-satoshi text-base font-bold text-white shadow-sm'>
+									🏠
+								</span>
+							</div>
+
+							<div className='mt-5 grid grid-cols-2 gap-3 border-t border-[#E8E3D8] pt-4 text-xs dark:border-[#1E382B] sm:grid-cols-4'>
+								<div className='rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 dark:border-slate-800 dark:bg-[#0A1F17]'>
+									<p className='text-[10px] uppercase text-slate-400'>
+										Category
+									</p>
+									<p className='mt-0.5 font-bold text-slate-800 dark:text-slate-200'>
+										{formatPropertyType(activeProperty.type)}
+									</p>
+								</div>
+								<div className='rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 dark:border-slate-800 dark:bg-[#0A1F17]'>
+									<p className='text-[10px] uppercase text-slate-400'>
+										Resident Type
+									</p>
+									<p className='mt-0.5 font-bold text-slate-800 dark:text-slate-200'>
+										{formatGender(activeProperty.gender)}
+									</p>
+								</div>
+								<div className='rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 dark:border-slate-800 dark:bg-[#0A1F17]'>
+									<p className='text-[10px] uppercase text-slate-400'>
+										City / Area
+									</p>
+									<p className='mt-0.5 truncate font-bold text-slate-800 dark:text-slate-200'>
+										{activeProperty.city}
+									</p>
+								</div>
+								<div className='rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 dark:border-slate-800 dark:bg-[#0A1F17]'>
+									<p className='text-[10px] uppercase text-slate-400'>
+										Owner Mobile
+									</p>
+									<p className='mt-0.5 truncate font-bold text-slate-800 dark:text-slate-200'>
+										{formatIndianMobile(dbUser.phone) || "Not provided"}
+									</p>
 								</div>
 							</div>
-						</CardHeader>
-						<CardContent className='p-0'>
-							<div className='overflow-x-auto'>
-								<table className='w-full text-left text-sm'>
-									<thead className='bg-gray-1 text-xs font-semibold uppercase text-body dark:bg-gray-800 dark:text-gray-300'>
-										<tr>
-											<th className='px-5 py-3.5'>Room No</th>
-											<th className='px-5 py-3.5'>Floor / Wing</th>
-											<th className='px-5 py-3.5'>Sharing Type</th>
-											<th className='px-5 py-3.5'>Rent per Bed</th>
-											<th className='px-5 py-3.5'>Status</th>
-										</tr>
-									</thead>
-									<tbody className='divide-y divide-stroke dark:divide-stroke-dark'>
-										<tr className='hover:bg-gray-1/50 dark:hover:bg-gray-800/50'>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												Room 101
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												1st Floor, Wing A
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												2-Sharing (Double)
-											</td>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												{formatINR(8500)}
-											</td>
-											<td className='px-5 py-3.5'>
-												<Badge variant='occupied'>2/2 Beds Occupied</Badge>
-											</td>
-										</tr>
-										<tr className='hover:bg-gray-1/50 dark:hover:bg-gray-800/50'>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												Room 102
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												1st Floor, Wing A
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												3-Sharing (Triple)
-											</td>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												{formatINR(6500)}
-											</td>
-											<td className='px-5 py-3.5'>
-												<Badge variant='available'>1 Bed Available</Badge>
-											</td>
-										</tr>
-										<tr className='hover:bg-gray-1/50 dark:hover:bg-gray-800/50'>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												Room 201
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												2nd Floor, Wing B
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												1-Sharing (Single)
-											</td>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												{formatINR(12000)}
-											</td>
-											<td className='px-5 py-3.5'>
-												<Badge variant='available'>Available</Badge>
-											</td>
-										</tr>
-										<tr className='hover:bg-gray-1/50 dark:hover:bg-gray-800/50'>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												Room 202
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												2nd Floor, Wing B
-											</td>
-											<td className='px-5 py-3.5 text-body dark:text-gray-300'>
-												2-Sharing (Double)
-											</td>
-											<td className='px-5 py-3.5 font-medium text-dark dark:text-white'>
-												{formatINR(8500)}
-											</td>
-											<td className='px-5 py-3.5'>
-												<Badge variant='maintenance'>
-													Painting / AC Repair
-												</Badge>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+						</CardContent>
+					</Card>
+
+					{/* Rooms & Beds Inventory Empty State */}
+					<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+						<CardContent className='p-6 text-center sm:p-8'>
+							<div className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+								<svg
+									className='size-6'
+									fill='none'
+									viewBox='0 0 24 24'
+									stroke='currentColor'
+								>
+									<path
+										strokeLinecap='round'
+										strokeLinejoin='round'
+										strokeWidth='2'
+										d='M4 6h16M4 10h16M4 14h16M4 18h16'
+									/>
+								</svg>
+							</div>
+
+							<h3 className='mt-4 font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+								No Rooms or Beds Configured Yet
+							</h3>
+
+							<p className='mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm'>
+								Your PG/Hostel building is officially registered! Floor-wise
+								room setup, single/double sharing allocations, and real-time bed
+								inventories will be configured here in Phase E.
+							</p>
+
+							<div className='mt-5 flex items-center justify-center gap-2'>
+								<span className='inline-flex items-center rounded-lg bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'>
+									Phase E Roadmap • Room & Bed Layout Designer
+								</span>
+							</div>
+						</CardContent>
+					</Card>
+
+					{/* Residents Management Empty State */}
+					<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+						<CardContent className='p-6 text-center sm:p-8'>
+							<div className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+								<svg
+									className='size-6'
+									fill='none'
+									viewBox='0 0 24 24'
+									stroke='currentColor'
+								>
+									<path
+										strokeLinecap='round'
+										strokeLinejoin='round'
+										strokeWidth='2'
+										d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
+									/>
+								</svg>
+							</div>
+
+							<h3 className='mt-4 font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+								No Residents Checked In
+							</h3>
+
+							<p className='mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm'>
+								Once your rooms and beds are created, you can onboard residents,
+								collect Aadhaar / KYC documents, and monitor digital check-in
+								records.
+							</p>
+
+							<div className='mt-5 flex items-center justify-center gap-2'>
+								<span className='inline-flex items-center rounded-lg bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'>
+									Phase E Roadmap • Resident Onboarding & KYC
+								</span>
 							</div>
 						</CardContent>
 					</Card>
 				</div>
 
-				{/* Right 1 Col: Setup Checklist for New PG Owner */}
+				{/* Right 1 Col: Onboarding Roadmap Checklist */}
 				<div className='space-y-6'>
-					<Card>
-						<CardHeader>
-							<CardTitle>PG Setup Checklist</CardTitle>
-							<CardDescription>
-								Core workflows for onboarding your PG or Hostel operations
-							</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-4'>
-							<div className='flex items-start gap-3 rounded-lg border border-stroke p-3 dark:border-stroke-dark'>
-								<div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'>
-									✓
-								</div>
-								<div>
-									<h4 className='text-xs font-semibold text-dark dark:text-white'>
-										Design System Baseline
-									</h4>
-									<p className='text-xs text-body dark:text-gray-4'>
-										Tokens, components, and Indian currency utilities active.
-									</p>
-								</div>
-							</div>
+					<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+						<CardContent className='p-5 sm:p-6'>
+							<h3 className='font-satoshi text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300'>
+								PG/Hostel Setup Roadmap
+							</h3>
+							<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+								Your operational onboarding progress
+							</p>
 
-							<div className='flex items-start gap-3 rounded-lg border border-stroke p-3 dark:border-stroke-dark'>
-								<div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300'>
-									2
+							<div className='mt-4 space-y-3.5'>
+								{/* Step 1: Done */}
+								<div className='flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3 dark:border-emerald-900 dark:bg-emerald-950/40'>
+									<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white'>
+										✓
+									</div>
+									<div>
+										<h4 className='text-xs font-bold text-emerald-950 dark:text-emerald-200'>
+											Step 1: PG/Hostel Registered
+										</h4>
+										<p className='mt-0.5 text-[11px] text-emerald-800 dark:text-emerald-300'>
+											{activeProperty.name} is active in {activeProperty.city}.
+										</p>
+									</div>
 								</div>
-								<div>
-									<h4 className='text-xs font-semibold text-dark dark:text-white'>
-										Property & Room Inventory (Phase E)
-									</h4>
-									<p className='text-xs text-body dark:text-gray-4'>
-										Prisma models and management views for properties, floors,
-										rooms, and beds.
-									</p>
-								</div>
-							</div>
 
-							<div className='flex items-start gap-3 rounded-lg border border-stroke p-3 dark:border-stroke-dark'>
-								<div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300'>
-									3
+								{/* Step 2: Phase E */}
+								<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
+									<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+										2
+									</div>
+									<div>
+										<h4 className='text-xs font-bold text-dark dark:text-white'>
+											Step 2: Room & Bed Layouts (Phase E)
+										</h4>
+										<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
+											Add floors, 1/2/3 sharing rooms, and bed counts.
+										</p>
+									</div>
 								</div>
-								<div>
-									<h4 className='text-xs font-semibold text-dark dark:text-white'>
-										Resident KYC & Allotment (Phase E)
-									</h4>
-									<p className='text-xs text-body dark:text-gray-4'>
-										Aadhaar/ID collection, guardian details, and check-in dates.
-									</p>
-								</div>
-							</div>
 
-							<div className='flex items-start gap-3 rounded-lg border border-stroke p-3 dark:border-stroke-dark'>
-								<div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300'>
-									4
+								{/* Step 3: Phase E */}
+								<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
+									<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+										3
+									</div>
+									<div>
+										<h4 className='text-xs font-bold text-dark dark:text-white'>
+											Step 3: Resident Check-In & KYC (Phase E)
+										</h4>
+										<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
+											Aadhaar verification, guardian details, and allotments.
+										</p>
+									</div>
 								</div>
-								<div>
-									<h4 className='text-xs font-semibold text-dark dark:text-white'>
-										Rent Invoicing & Dues (Phase F)
-									</h4>
-									<p className='text-xs text-body dark:text-gray-4'>
-										Cycle generation, security deposit tracking, and payment
-										logging.
-									</p>
+
+								{/* Step 4: Phase F */}
+								<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
+									<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+										4
+									</div>
+									<div>
+										<h4 className='text-xs font-bold text-dark dark:text-white'>
+											Step 4: Automated Rent & Dues (Phase F)
+										</h4>
+										<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
+											UPI payment links, monthly dues, and PDF receipts.
+										</p>
+									</div>
 								</div>
 							</div>
 						</CardContent>
 					</Card>
 
-					{/* Phase Notice Card */}
+					{/* Information Card */}
 					<div className='rounded-xl border border-[#E8E3D8] bg-[#F4EFEA]/60 p-5 dark:border-[#1E3A2F] dark:bg-[#071711]'>
 						<div className='flex items-start gap-3'>
-							<span className='text-emerald-600 dark:text-emerald-400'>ℹ️</span>
+							<span className='text-base'>🇮🇳</span>
 							<div>
-								<h4 className='text-xs font-semibold text-dark dark:text-white'>
-									Indian PG Operations Focus
+								<h4 className='text-xs font-bold text-slate-900 dark:text-white'>
+									Choose Ghar Support
 								</h4>
-								<p className='mt-1 text-xs leading-relaxed text-body dark:text-gray-4'>
-									Designed specifically for PG & hostel operators managing
-									multi-sharing rooms, monthly rent collections in Rupees, and
-									verified resident records.
+								<p className='mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400'>
+									Need help configuring your property or managing multiple
+									PG/Hostel branches? Contact our team anytime from the Support
+									section.
 								</p>
 							</div>
 						</div>

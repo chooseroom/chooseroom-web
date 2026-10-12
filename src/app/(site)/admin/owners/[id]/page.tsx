@@ -37,6 +37,9 @@ export default async function OwnerDetailPage({
 			setupCompleted: true,
 			emailVerified: true,
 			createdAt: true,
+			properties: {
+				orderBy: { createdAt: "desc" },
+			},
 		},
 	});
 
@@ -231,6 +234,42 @@ export default async function OwnerDetailPage({
 							</div>
 						</CardContent>
 					</Card>
+
+					{/* Configured PG/Hostel Properties */}
+					{owner.properties && owner.properties.length > 0 && (
+						<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+							<CardContent className='p-6'>
+								<h2 className='border-b border-[#E8E3D8] pb-3 font-satoshi text-base font-bold text-slate-900 dark:border-[#1E382B] dark:text-white'>
+									Configured PG/Hostel Properties ({owner.properties.length})
+								</h2>
+								<div className='mt-4 space-y-3'>
+									{owner.properties.map((prop) => (
+										<div
+											key={prop.id}
+											className='flex items-start justify-between rounded-xl border border-[#E8E3D8] p-3.5 dark:border-[#1E382B] dark:bg-[#0A1F17]'
+										>
+											<div>
+												<h4 className='font-satoshi text-sm font-bold text-slate-900 dark:text-white'>
+													{prop.name}
+												</h4>
+												<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+													{prop.address}, {prop.area}, {prop.city}
+												</p>
+											</div>
+											<div className='flex items-center gap-1.5'>
+												<Badge variant='neutral' size='sm'>
+													{prop.type === "BOTH" ? "PG & Hostel" : prop.type}
+												</Badge>
+												<Badge variant='available' size='sm'>
+													{prop.gender}
+												</Badge>
+											</div>
+										</div>
+									))}
+								</div>
+							</CardContent>
+						</Card>
+					)}
 				</div>
 
 				{/* Column 3: Audit Trail & Security Info */}

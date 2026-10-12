@@ -3,15 +3,25 @@ import { BrandLogo } from "@/components/Common/BrandLogo";
 import { Button, Card, CardContent, Input } from "@/components/Common/UI";
 import { getSession, signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function Signin() {
-	const [identifier, setIdentifier] = useState("");
+function SigninForm() {
+	const searchParams = useSearchParams();
+	const router = useRouter();
+	const isRegistered = searchParams.get("registered") === "true";
+	const initialIdentifier = searchParams.get("identifier") || "";
+
+	const [identifier, setIdentifier] = useState(initialIdentifier);
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
-	const router = useRouter();
+
+	useEffect(() => {
+		if (initialIdentifier && !identifier) {
+			setIdentifier(initialIdentifier);
+		}
+	}, [initialIdentifier, identifier]);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -36,16 +46,20 @@ export default function Signin() {
 				);
 			} else if (res?.ok) {
 				toast.success("Welcome back! Signed in successfully.");
-				// Check user role to redirect to the appropriate portal
 				try {
 					const session = await getSession();
-					if ((session?.user as any)?.role === "ADMIN") {
+					const userRole = (session?.user as any)?.role;
+					const isSetupCompleted = (session?.user as any)?.setupCompleted;
+
+					if (userRole === "ADMIN") {
 						router.push("/admin");
+					} else if (isSetupCompleted === false) {
+						router.push("/user/setup");
 					} else {
 						router.push("/user");
 					}
 				} catch {
-					router.push("/admin");
+					router.push("/user");
 				}
 				router.refresh();
 			}
@@ -69,12 +83,25 @@ export default function Signin() {
 							Sign In
 						</h2>
 						<p className='mt-1.5 text-xs text-slate-500 dark:text-slate-400 sm:text-sm'>
-							Access your Choose Ghar dashboard and property records.
+							Access your Choose Ghar dashboard and PG/Hostel records.
 						</p>
 					</div>
 
+					{/* Registration success callout */}
+					{isRegistered && (
+						<div className='mt-4 flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 text-xs text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'>
+							<span className='flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white'>
+								✓
+							</span>
+							<p>
+								<strong>Account created!</strong> Please enter your password to
+								sign in.
+							</p>
+						</div>
+					)}
+
 					{/* Form */}
-					<form onSubmit={handleSubmit} className='mt-7 space-y-4'>
+					<form onSubmit={handleSubmit} className='mt-6 space-y-4'>
 						<Input
 							label='Mobile number or email'
 							id='identifier'
@@ -138,5 +165,19 @@ export default function Signin() {
 				</CardContent>
 			</Card>
 		</div>
+	);
+}
+
+export default function Signin() {
+	return (
+		<Suspense
+			fallback={
+				<div className='flex min-h-[calc(100vh-160px)] items-center justify-center p-8'>
+					<div className='size-8 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent'></div>
+				</div>
+			}
+		>
+			<SigninForm />
+		</Suspense>
 	);
 }

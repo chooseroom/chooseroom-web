@@ -79,9 +79,28 @@ model User {
   apiKeys               ApiKey[]
   invitation            Invitation[]
   adminLogs             AdminAuditLog[] @relation("AdminActions")
+  properties            Property[]
 
   @@index([phone])
   @@index([status])
+}
+
+model Property {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   // "PG" | "HOSTEL" | "BOTH"
+  gender    String   // "BOYS" | "GIRLS" | "COED"
+  city      String
+  area      String
+  address   String
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@index([city])
 }
 
 model AdminAuditLog {

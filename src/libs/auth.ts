@@ -1,4 +1,5 @@
 import { prisma } from "@/libs/prismaDb";
+import { normalizeIndianMobile } from "@/libs/formatters";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
@@ -14,7 +15,12 @@ import GoogleProvider from "next-auth/providers/google";
 
 declare module "next-auth" {
 	interface Session extends DefaultSession {
-		user: User & DefaultSession["user"];
+		user: User &
+			DefaultSession["user"] & {
+				role?: string | null;
+				status?: string | null;
+				setupCompleted?: boolean;
+			};
 	}
 }
 
@@ -39,21 +45,41 @@ export const authOptions: NextAuthOptions = {
 			},
 
 			async authorize(credentials) {
-				// Require both email and password
+				// Require both identifier (email/phone) and password
 				if (!credentials?.email || !credentials?.password) {
-					throw new Error("Please enter an email or password");
+					throw new Error("Please enter your mobile number/email and password");
 				}
 
-				// Look up the user
-				const user = await prisma.user.findUnique({
-					where: {
-						email: credentials.email,
-					},
-				});
+				const identifier = credentials.email.trim();
+				const cleanPhone = normalizeIndianMobile(identifier);
 
-				// Reject if user not found or has no password (OAuth-only account)
+				let user = null;
+
+				// 1. If identifier resembles a 10-digit Indian mobile, check phone and fallback email
+				if (cleanPhone.length === 10) {
+					user = await prisma.user.findFirst({
+						where: {
+							OR: [
+								{ phone: cleanPhone },
+								{ email: `${cleanPhone}@pghostel.local` },
+								{ email: identifier.toLowerCase() },
+							],
+						},
+					});
+				}
+
+				// 2. If not found by phone, query by case-insensitive email
+				if (!user) {
+					user = await prisma.user.findFirst({
+						where: {
+							email: { equals: identifier.toLowerCase(), mode: "insensitive" },
+						},
+					});
+				}
+
+				// Reject if user not found or has no password
 				if (!user || !user?.password) {
-					throw new Error("No user found");
+					throw new Error("Invalid credentials. Please verify your details.");
 				}
 
 				// Verify password using constant-time comparison
@@ -211,7 +237,7 @@ export const authOptions: NextAuthOptions = {
 			if (trigger === "update") {
 				if (!token.sub) return token;
 
-				// Re-fetch only billing-related fields from the database
+				// Re-fetch only safe fields from the database
 				const freshUser = await prisma.user.findUnique({
 					where: { id: token.sub },
 					select: {
@@ -222,6 +248,7 @@ export const authOptions: NextAuthOptions = {
 						image: true,
 						name: true,
 						status: true,
+						setupCompleted: true,
 					},
 				});
 
@@ -237,6 +264,7 @@ export const authOptions: NextAuthOptions = {
 					subscriptionId: freshUser.subscriptionId,
 					customerId: freshUser.customerId,
 					status: freshUser.status,
+					setupCompleted: freshUser.setupCompleted,
 				};
 			}
 
@@ -250,6 +278,7 @@ export const authOptions: NextAuthOptions = {
 					subscriptionId: user.subscriptionId,
 					role: user.role,
 					status: user.status,
+					setupCompleted: user.setupCompleted,
 					picture: user.image,
 					image: user.image,
 				};
@@ -269,6 +298,7 @@ export const authOptions: NextAuthOptions = {
 						subscriptionId: token.subscriptionId,
 						role: token.role,
 						status: token.status,
+						setupCompleted: (token as any).setupCompleted,
 						image: token.picture,
 					},
 				};

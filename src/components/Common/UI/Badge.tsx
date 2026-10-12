@@ -8,7 +8,8 @@ export type BadgeVariant =
 	| "pending"
 	| "overdue"
 	| "neutral"
-	| "primary";
+	| "primary"
+	| "success";
 
 interface BadgeProps {
 	variant?: BadgeVariant;
@@ -59,6 +60,11 @@ const variantStyles: Record<BadgeVariant, { container: string; dot: string }> =
 			container:
 				"bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800",
 			dot: "bg-indigo-500",
+		},
+		success: {
+			container:
+				"bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800",
+			dot: "bg-emerald-500",
 		},
 	};
 

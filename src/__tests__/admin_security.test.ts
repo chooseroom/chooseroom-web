@@ -86,6 +86,7 @@ async function runTests() {
 		body: JSON.stringify({
 			name: "Hacker Admin",
 			email: testEmail,
+			phone: `9830${Date.now().toString().slice(-6)}`,
 			password: "HackerPassword123!",
 			role: "ADMIN",
 			status: "ACTIVE",

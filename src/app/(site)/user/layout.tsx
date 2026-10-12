@@ -2,10 +2,17 @@
 import Header from "@/components/Common/Dashboard/Header";
 import Sidebar from "@/components/Common/Dashboard/Sidebar";
 import { sidebarData } from "@/staticData/sidebarData";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+const UserLayout = ({ children }: { children: React.ReactNode }) => {
 	const [openSidebar, setOpenSidebar] = useState(false);
+	const pathname = usePathname();
+
+	// Full-screen distraction-free layout for initial onboarding setup
+	if (pathname?.startsWith("/user/setup")) {
+		return <>{children}</>;
+	}
 
 	return (
 		<>
@@ -25,11 +32,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 				></div>
 				<section className='lg:ml-[290px]'>
 					<Header openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
-					<div className='p-5 pt-12 md:p-10'>{children}</div>
+					<div className='p-4 sm:p-6 lg:p-8'>{children}</div>
 				</section>
 			</main>
 		</>
 	);
 };
 
-export default AdminLayout;
+export default UserLayout;
