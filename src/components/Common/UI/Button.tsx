@@ -9,6 +9,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	size?: ButtonSize;
 	isLoading?: boolean;
 	icon?: React.ReactNode;
+	rightIcon?: React.ReactNode;
 	children: React.ReactNode;
 }
 
@@ -28,7 +29,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 const sizeClasses: Record<ButtonSize, string> = {
 	sm: "h-9 px-3 text-xs font-medium rounded-lg gap-1.5",
 	md: "h-11 px-4 text-sm font-medium rounded-lg gap-2",
-	lg: "h-12 px-6 text-base font-medium rounded-xl gap-2.5",
+	lg: "h-12 px-6 text-sm font-semibold rounded-xl gap-2",
 };
 
 export function Button({
@@ -36,6 +37,7 @@ export function Button({
 	size = "md",
 	isLoading = false,
 	icon,
+	rightIcon,
 	children,
 	className = "",
 	disabled,
@@ -69,9 +71,14 @@ export function Button({
 					/>
 				</svg>
 			) : (
-				icon && <span className='shrink-0'>{icon}</span>
+				icon && (
+					<span className='inline-flex shrink-0 items-center'>{icon}</span>
+				)
 			)}
-			<span>{children}</span>
+			<span className='inline-flex items-center'>{children}</span>
+			{!isLoading && rightIcon && (
+				<span className='inline-flex shrink-0 items-center'>{rightIcon}</span>
+			)}
 		</button>
 	);
 }

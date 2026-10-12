@@ -14,6 +14,171 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
+// ==========================================
+// Professional Vector Icons (No Emojis)
+// ==========================================
+
+function IconHouse({ className = "size-5" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='1.75'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<path d='M3 10.5L12 3l9 7.5' />
+			<path d='M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5' />
+			<path d='M9 21v-6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6' />
+		</svg>
+	);
+}
+
+function IconBuilding({ className = "size-5" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='1.75'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<rect x='4' y='3' width='16' height='18' rx='2' />
+			<path d='M9 3v18' />
+			<path d='M4 8h5M4 12h5M4 16h5' />
+			<path d='M14 7h2M14 11h2M14 15h2' />
+		</svg>
+	);
+}
+
+function IconUserMale({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='1.75'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<circle cx='12' cy='7' r='4' />
+			<path d='M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2' />
+		</svg>
+	);
+}
+
+function IconUserFemale({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='1.75'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<circle cx='12' cy='7' r='4' />
+			<path d='M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2' />
+			<path d='M12 11v4' />
+			<path d='M10 13h4' />
+		</svg>
+	);
+}
+
+function IconUsersCoed({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='1.75'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
+			<circle cx='9' cy='7' r='4' />
+			<path d='M22 21v-2a4 4 0 0 0-3-3.87' />
+			<path d='M16 3.13a4 4 0 0 1 0 7.75' />
+		</svg>
+	);
+}
+
+function IconArrowRight({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<line x1='5' y1='12' x2='19' y2='12' />
+			<polyline points='12 5 19 12 12 19' />
+		</svg>
+	);
+}
+
+function IconArrowLeft({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<line x1='19' y1='12' x2='5' y2='12' />
+			<polyline points='12 19 5 12 12 5' />
+		</svg>
+	);
+}
+
+function IconShieldCheck({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='1.75'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' />
+			<polyline points='9 12 11 14 15 10' />
+		</svg>
+	);
+}
+
+function IconInfo({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg
+			className={className}
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='1.75'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		>
+			<circle cx='12' cy='12' r='10' />
+			<line x1='12' y1='16' x2='12' y2='12' />
+			<line x1='12' y1='8' x2='12.01' y2='8' />
+		</svg>
+	);
+}
+
 interface PropertySetupWizardProps {
 	ownerName: string;
 }
@@ -27,7 +192,7 @@ export default function PropertySetupWizard({
 	const [step, setStep] = useState<1 | 2 | 3>(1);
 	const [loading, setLoading] = useState(false);
 
-	// Form State - only PG or HOSTEL (no multi-purpose option)
+	// Form State - strictly PG or HOSTEL
 	const [name, setName] = useState("");
 	const [type, setType] = useState<"PG" | "HOSTEL">("PG");
 	const [gender, setGender] = useState<"BOYS" | "GIRLS" | "COED">("BOYS");
@@ -133,204 +298,210 @@ export default function PropertySetupWizard({
 	];
 
 	return (
-		<div className='mx-auto max-w-2xl px-2 py-4 sm:px-0 sm:py-10'>
-			{/* Top Header */}
-			<div className='mb-6 text-center sm:mb-8'>
+		<div className='mx-auto max-w-lg'>
+			{/* Top Brand Header */}
+			<div className='mb-4 text-center sm:mb-6'>
 				<div className='flex justify-center'>
 					<BrandLogo href='/user/setup' />
 				</div>
-				<h1 className='mt-4 font-satoshi text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:mt-6 sm:text-3xl'>
+				<h1 className='mt-3 font-satoshi text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:mt-4 sm:text-2xl'>
 					First-Time PG/Hostel Setup
 				</h1>
-				<p className='mt-1.5 px-2 text-xs text-slate-500 dark:text-slate-400 sm:text-sm'>
+				<p className='mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm'>
 					Welcome,{" "}
-					<strong className='text-slate-800 dark:text-slate-200'>
+					<span className='font-semibold text-slate-800 dark:text-slate-200'>
 						{ownerName}
-					</strong>
-					! Complete your initial property registration to activate your
-					dashboard.
+					</span>
+					! Configure your property to activate your dashboard.
 				</p>
 			</div>
 
-			{/* Progress Stepper - Clean & Responsive on all screens */}
-			<div className='mb-6 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm dark:border-slate-800 dark:bg-[#071711] sm:mb-8 sm:p-5'>
-				{/* Mobile Step Badge & Percentage Bar */}
-				<div className='mb-3 flex items-center justify-between sm:hidden'>
-					<span className='rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300'>
+			{/* Sleek Segmented Stepper */}
+			<div className='shadow-xs mb-4 rounded-xl border border-slate-200/90 bg-white p-3 dark:border-slate-800 dark:bg-[#071711] sm:mb-5 sm:p-3.5'>
+				<div className='mb-2.5 flex items-center justify-between'>
+					<span className='inline-flex items-center gap-1.5 rounded-full border border-emerald-200/70 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/70 dark:text-emerald-300'>
+						<span className='size-1.5 rounded-full bg-emerald-600' />
 						Step {step} of 3
 					</span>
-					<span className='text-xs font-semibold text-slate-600 dark:text-slate-300'>
+					<span className='text-xs font-medium text-slate-600 dark:text-slate-300'>
 						{step === 1
-							? "Profile & Category"
+							? "Category & Profile"
 							: step === 2
 								? "Property Location"
-								: "Review & Confirmation"}
+								: "Review & Launch"}
 					</span>
 				</div>
 
-				{/* Visual Step Numbers & Connectors */}
-				<div className='flex items-center justify-between'>
-					{/* Step 1 */}
-					<div className='flex flex-1 items-center'>
-						<div
-							className={`flex size-8 shrink-0 items-center justify-center rounded-xl font-satoshi text-xs font-bold transition-all sm:size-10 sm:text-sm ${
-								step >= 1
-									? "bg-[#1A382B] text-white shadow-sm ring-2 ring-emerald-500/20"
-									: "bg-slate-100 text-slate-500 dark:bg-slate-800"
-							}`}
-						>
-							{step > 1 ? "✓" : "1"}
-						</div>
-						<div className='ml-2.5 hidden sm:block'>
-							<p className='text-xs font-bold text-slate-900 dark:text-white'>
-								Category & Name
-							</p>
-							<p className='text-[11px] text-slate-400'>PG or Hostel</p>
-						</div>
-						<div
-							className={`mx-2 h-1 flex-1 rounded-full transition-colors sm:mx-3 ${
-								step > 1 ? "bg-emerald-600" : "bg-slate-200 dark:bg-slate-800"
-							}`}
-						/>
-					</div>
-
-					{/* Step 2 */}
-					<div className='flex flex-1 items-center'>
-						<div
-							className={`flex size-8 shrink-0 items-center justify-center rounded-xl font-satoshi text-xs font-bold transition-all sm:size-10 sm:text-sm ${
-								step >= 2
-									? "bg-[#1A382B] text-white shadow-sm ring-2 ring-emerald-500/20"
-									: "bg-slate-100 text-slate-500 dark:bg-slate-800"
-							}`}
-						>
-							{step > 2 ? "✓" : "2"}
-						</div>
-						<div className='ml-2.5 hidden sm:block'>
-							<p className='text-xs font-bold text-slate-900 dark:text-white'>
-								Location
-							</p>
-							<p className='text-[11px] text-slate-400'>City & Address</p>
-						</div>
-						<div
-							className={`mx-2 h-1 flex-1 rounded-full transition-colors sm:mx-3 ${
-								step > 2 ? "bg-emerald-600" : "bg-slate-200 dark:bg-slate-800"
-							}`}
-						/>
-					</div>
-
-					{/* Step 3 */}
-					<div className='flex items-center'>
-						<div
-							className={`flex size-8 shrink-0 items-center justify-center rounded-xl font-satoshi text-xs font-bold transition-all sm:size-10 sm:text-sm ${
-								step === 3
-									? "bg-[#1A382B] text-white shadow-sm ring-2 ring-emerald-500/20"
-									: "bg-slate-100 text-slate-500 dark:bg-slate-800"
-							}`}
-						>
-							3
-						</div>
-						<div className='ml-2.5 hidden sm:block'>
-							<p className='text-xs font-bold text-slate-900 dark:text-white'>
-								Launch
-							</p>
-							<p className='text-[11px] text-slate-400'>Confirm & Start</p>
-						</div>
-					</div>
+				<div className='grid grid-cols-3 gap-1.5 sm:gap-2'>
+					<div
+						className={`h-1.5 rounded-full transition-all duration-300 ${
+							step >= 1
+								? "bg-[#1A382B] dark:bg-emerald-500"
+								: "bg-slate-200 dark:bg-slate-800"
+						}`}
+					/>
+					<div
+						className={`h-1.5 rounded-full transition-all duration-300 ${
+							step >= 2
+								? "bg-[#1A382B] dark:bg-emerald-500"
+								: "bg-slate-200 dark:bg-slate-800"
+						}`}
+					/>
+					<div
+						className={`h-1.5 rounded-full transition-all duration-300 ${
+							step >= 3
+								? "bg-[#1A382B] dark:bg-emerald-500"
+								: "bg-slate-200 dark:bg-slate-800"
+						}`}
+					/>
 				</div>
 			</div>
 
 			{/* Wizard Form Card */}
-			<Card className='rounded-2xl border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
-				<CardContent className='p-4.5 sm:p-8'>
+			<Card className='shadow-xs rounded-2xl border-slate-200/90 bg-white dark:border-slate-800 dark:bg-[#071711]'>
+				<CardContent className='p-4 sm:p-6'>
 					{/* STEP 1: Basic PG/Hostel Details */}
 					{step === 1 && (
-						<form onSubmit={handleNextFromStep1} className='space-y-5'>
+						<form
+							onSubmit={handleNextFromStep1}
+							className='space-y-4 sm:space-y-5'
+						>
 							<div>
-								<h2 className='font-satoshi text-lg font-bold text-slate-900 dark:text-white sm:text-xl'>
-									Step 1: Property Category & Profile
+								<h2 className='font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+									Property Category & Profile
 								</h2>
-								<p className='mt-1 text-xs text-slate-500 dark:text-slate-400'>
-									Select whether this building operates as a PG or a Hostel, and
-									name your property.
+								<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+									Select property type and name your establishment.
 								</p>
 							</div>
 
-							{/* Category Selection - Exactly 2 options (PG or Hostel), Multi-option removed */}
+							{/* Category Selection - Strictly 2 Options with Vector SVGs */}
 							<div>
-								<div className='mb-2 flex items-center justify-between'>
+								<div className='mb-1.5 flex items-center justify-between'>
 									<label className='block text-xs font-semibold text-slate-800 dark:text-slate-200 sm:text-sm'>
 										Property Category <span className='text-rose-500'>*</span>
 									</label>
-									<span className='text-[11px] text-slate-400'>Choose one</span>
+									<span className='text-[11px] text-slate-400'>
+										Choose PG or Hostel
+									</span>
 								</div>
 
-								<div className='grid grid-cols-2 gap-3 sm:gap-4'>
-									{[
-										{
-											id: "PG" as const,
-											title: "PG (Paying Guest)",
-											desc: "Furnished rooms or beds with food & utilities included",
-											icon: "🏠",
-										},
-										{
-											id: "HOSTEL" as const,
-											title: "Hostel",
-											desc: "Hostel building for students or working professionals",
-											icon: "🏢",
-										},
-									].map((item) => (
-										<button
-											key={item.id}
-											type='button'
-											onClick={() => setType(item.id)}
-											className={`relative flex flex-col items-start rounded-2xl border p-3.5 text-left transition-all sm:p-5 ${
-												type === item.id
-													? "border-emerald-600 bg-emerald-50/70 shadow-sm ring-2 ring-emerald-600/20 dark:border-emerald-500 dark:bg-emerald-950/40"
-													: "border-[#E8E3D8] bg-white hover:border-slate-300 dark:border-[#1E382B] dark:bg-[#0A1F17]"
-											}`}
-										>
-											<div className='flex w-full items-center justify-between'>
-												<span className='text-2xl sm:text-3xl'>
-													{item.icon}
-												</span>
-												<div
-													className={`flex h-5 w-5 items-center justify-center rounded-full border transition ${
-														type === item.id
-															? "border-emerald-600 bg-emerald-600 text-white"
-															: "border-slate-300 dark:border-slate-700"
-													}`}
-												>
-													{type === item.id && (
-														<svg
-															className='h-3 w-3'
-															fill='none'
-															viewBox='0 0 24 24'
-															stroke='currentColor'
-															strokeWidth={3}
-														>
-															<path
-																strokeLinecap='round'
-																strokeLinejoin='round'
-																d='M5 13l4 4L19 7'
-															/>
-														</svg>
-													)}
-												</div>
+								<div className='grid grid-cols-2 gap-2.5 sm:gap-3'>
+									{/* PG Option */}
+									<button
+										type='button'
+										onClick={() => setType("PG")}
+										className={`group relative flex flex-col justify-between rounded-xl border p-3 text-left transition-all sm:p-3.5 ${
+											type === "PG"
+												? "shadow-xs border-emerald-600 bg-emerald-50/50 ring-1 ring-emerald-600/30 dark:border-emerald-500 dark:bg-emerald-950/40"
+												: "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50 dark:border-slate-800 dark:bg-[#0A1F17]"
+										}`}
+									>
+										<div className='flex w-full items-center justify-between'>
+											<div
+												className={`flex size-8 items-center justify-center rounded-lg transition-colors sm:size-9 ${
+													type === "PG"
+														? "shadow-xs bg-[#1A382B] text-white dark:bg-emerald-600"
+														: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+												}`}
+											>
+												<IconHouse className='size-4 sm:size-4.5' />
 											</div>
-											<span
-												className={`mt-2.5 block text-xs font-bold sm:mt-3 sm:text-base ${
-													type === item.id
+											<div
+												className={`flex size-4.5 items-center justify-center rounded-full border transition-all ${
+													type === "PG"
+														? "border-emerald-600 bg-emerald-600 text-white"
+														: "border-slate-300 dark:border-slate-700"
+												}`}
+											>
+												{type === "PG" && (
+													<svg
+														className='size-3'
+														viewBox='0 0 24 24'
+														fill='none'
+														stroke='currentColor'
+														strokeWidth={3}
+														strokeLinecap='round'
+														strokeLinejoin='round'
+													>
+														<polyline points='20 6 9 17 4 12' />
+													</svg>
+												)}
+											</div>
+										</div>
+										<div className='mt-2.5'>
+											<p
+												className={`text-xs font-bold sm:text-sm ${
+													type === "PG"
 														? "text-emerald-950 dark:text-emerald-200"
 														: "text-slate-900 dark:text-white"
 												}`}
 											>
-												{item.title}
-											</span>
-											<span className='mt-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 sm:text-xs'>
-												{item.desc}
-											</span>
-										</button>
-									))}
+												PG (Paying Guest)
+											</p>
+											<p className='mt-0.5 text-[11px] leading-tight text-slate-500 dark:text-slate-400'>
+												Furnished rooms or beds with food & utilities included
+											</p>
+										</div>
+									</button>
+
+									{/* Hostel Option */}
+									<button
+										type='button'
+										onClick={() => setType("HOSTEL")}
+										className={`group relative flex flex-col justify-between rounded-xl border p-3 text-left transition-all sm:p-3.5 ${
+											type === "HOSTEL"
+												? "shadow-xs border-emerald-600 bg-emerald-50/50 ring-1 ring-emerald-600/30 dark:border-emerald-500 dark:bg-emerald-950/40"
+												: "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50 dark:border-slate-800 dark:bg-[#0A1F17]"
+										}`}
+									>
+										<div className='flex w-full items-center justify-between'>
+											<div
+												className={`flex size-8 items-center justify-center rounded-lg transition-colors sm:size-9 ${
+													type === "HOSTEL"
+														? "shadow-xs bg-[#1A382B] text-white dark:bg-emerald-600"
+														: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+												}`}
+											>
+												<IconBuilding className='size-4 sm:size-4.5' />
+											</div>
+											<div
+												className={`flex size-4.5 items-center justify-center rounded-full border transition-all ${
+													type === "HOSTEL"
+														? "border-emerald-600 bg-emerald-600 text-white"
+														: "border-slate-300 dark:border-slate-700"
+												}`}
+											>
+												{type === "HOSTEL" && (
+													<svg
+														className='size-3'
+														viewBox='0 0 24 24'
+														fill='none'
+														stroke='currentColor'
+														strokeWidth={3}
+														strokeLinecap='round'
+														strokeLinejoin='round'
+													>
+														<polyline points='20 6 9 17 4 12' />
+													</svg>
+												)}
+											</div>
+										</div>
+										<div className='mt-2.5'>
+											<p
+												className={`text-xs font-bold sm:text-sm ${
+													type === "HOSTEL"
+														? "text-emerald-950 dark:text-emerald-200"
+														: "text-slate-900 dark:text-white"
+												}`}
+											>
+												Hostel
+											</p>
+											<p className='mt-0.5 text-[11px] leading-tight text-slate-500 dark:text-slate-400'>
+												Hostel building for students or working professionals
+											</p>
+										</div>
+									</button>
 								</div>
 							</div>
 
@@ -342,42 +513,54 @@ export default function PropertySetupWizard({
 									name='property-name'
 									type='text'
 									required
-									placeholder='e.g. Shree Balaji PG/Hostel or Landmark Girls Hostel'
+									placeholder='e.g. Shree Balaji PG or Landmark Girls Hostel'
 									value={name}
 									onChange={(e) => setName(e.target.value)}
-									helperText='This name will appear on resident receipts, rent invoices, and your owner dashboard.'
+									helperText='Name displayed on resident rent receipts and agreements.'
 								/>
 							</div>
 
-							{/* Resident Gender Profile */}
+							{/* Resident Profile - Clean Vector Selector */}
 							<div>
-								<div className='mb-2 flex items-center justify-between'>
+								<div className='mb-1.5 flex items-center justify-between'>
 									<label className='block text-xs font-semibold text-slate-800 dark:text-slate-200 sm:text-sm'>
 										Resident Type <span className='text-rose-500'>*</span>
 									</label>
 									<span className='text-[11px] text-slate-400'>
-										Select occupant type
+										Target occupants
 									</span>
 								</div>
 
-								<div className='grid grid-cols-3 gap-2 sm:gap-3'>
+								<div className='grid grid-cols-3 gap-2'>
 									{[
-										{ id: "BOYS" as const, title: "Boys Only", icon: "👨" },
-										{ id: "GIRLS" as const, title: "Girls Only", icon: "👩" },
-										{ id: "COED" as const, title: "Co-ed", icon: "👥" },
+										{
+											id: "BOYS" as const,
+											title: "Boys Only",
+											Icon: IconUserMale,
+										},
+										{
+											id: "GIRLS" as const,
+											title: "Girls Only",
+											Icon: IconUserFemale,
+										},
+										{
+											id: "COED" as const,
+											title: "Co-ed",
+											Icon: IconUsersCoed,
+										},
 									].map((item) => (
 										<button
 											key={item.id}
 											type='button'
 											onClick={() => setGender(item.id)}
-											className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all sm:p-3.5 ${
+											className={`flex flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center transition-all ${
 												gender === item.id
-													? "border-emerald-600 bg-emerald-50/70 font-semibold text-emerald-950 ring-2 ring-emerald-600/20 dark:bg-emerald-950/40 dark:text-emerald-200"
-													: "border-[#E8E3D8] bg-white text-slate-700 hover:border-slate-300 dark:border-[#1E382B] dark:bg-[#0A1F17] dark:text-slate-300"
+													? "border-emerald-600 bg-emerald-50/60 font-semibold text-emerald-950 ring-1 ring-emerald-600/20 dark:bg-emerald-950/40 dark:text-emerald-200"
+													: "border-slate-200 bg-slate-50/40 text-slate-700 hover:border-slate-300 hover:bg-slate-100/60 dark:border-slate-800 dark:bg-[#0A1F17] dark:text-slate-300"
 											}`}
 										>
-											<span className='text-xl sm:text-2xl'>{item.icon}</span>
-											<span className='mt-1 text-xs font-bold sm:text-sm'>
+											<item.Icon className='size-4 text-inherit sm:size-4.5' />
+											<span className='mt-1 text-xs font-bold'>
 												{item.title}
 											</span>
 										</button>
@@ -385,14 +568,16 @@ export default function PropertySetupWizard({
 								</div>
 							</div>
 
-							<div className='pt-2'>
+							{/* Primary Action Button */}
+							<div className='pt-1 sm:pt-2'>
 								<Button
 									type='submit'
 									variant='primary'
 									size='lg'
-									className='w-full py-3.5 text-sm sm:py-4'
+									className='w-full'
+									rightIcon={<IconArrowRight className='size-4' />}
 								>
-									Continue to Location →
+									Continue to Location
 								</Button>
 							</div>
 						</form>
@@ -400,17 +585,20 @@ export default function PropertySetupWizard({
 
 					{/* STEP 2: Location & Address */}
 					{step === 2 && (
-						<form onSubmit={handleNextFromStep2} className='space-y-5'>
+						<form
+							onSubmit={handleNextFromStep2}
+							className='space-y-4 sm:space-y-5'
+						>
 							<div>
-								<h2 className='font-satoshi text-lg font-bold text-slate-900 dark:text-white sm:text-xl'>
-									Step 2: Property Location & Address
+								<h2 className='font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+									Property Location & Address
 								</h2>
-								<p className='mt-1 text-xs text-slate-500 dark:text-slate-400'>
-									Where is your PG/Hostel building located?
+								<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+									Where is your PG/Hostel building physically located?
 								</p>
 							</div>
 
-							<div className='space-y-4 sm:space-y-5'>
+							<div className='space-y-3.5 sm:space-y-4'>
 								{/* City Input with Quick Tap Chips */}
 								<div>
 									<Input
@@ -436,8 +624,8 @@ export default function PropertySetupWizard({
 												onClick={() => setCity(c)}
 												className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition ${
 													city === c
-														? "shadow-xs bg-emerald-600 font-bold text-white"
-														: "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+														? "shadow-xs border border-emerald-600 bg-emerald-600 font-bold text-white"
+														: "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
 												}`}
 											>
 												{c}
@@ -460,7 +648,7 @@ export default function PropertySetupWizard({
 									/>
 								</div>
 
-								{/* Detailed Address */}
+								{/* Detailed Street Address */}
 								<div>
 									<Input
 										label='Detailed Street Address'
@@ -477,23 +665,25 @@ export default function PropertySetupWizard({
 							</div>
 
 							{/* Navigation Buttons */}
-							<div className='flex items-center gap-2.5 pt-2 sm:gap-3'>
+							<div className='flex items-center gap-2 pt-1 sm:gap-3 sm:pt-2'>
 								<Button
 									type='button'
 									variant='outline'
 									size='lg'
 									onClick={() => setStep(1)}
 									className='w-1/3'
+									icon={<IconArrowLeft className='size-4' />}
 								>
-									← Back
+									Back
 								</Button>
 								<Button
 									type='submit'
 									variant='primary'
 									size='lg'
 									className='w-2/3'
+									rightIcon={<IconArrowRight className='size-4' />}
 								>
-									Review Summary →
+									Review Summary
 								</Button>
 							</div>
 						</form>
@@ -501,22 +691,21 @@ export default function PropertySetupWizard({
 
 					{/* STEP 3: Review & Confirmation */}
 					{step === 3 && (
-						<div className='space-y-5'>
+						<div className='space-y-4 sm:space-y-5'>
 							<div>
-								<h2 className='font-satoshi text-lg font-bold text-slate-900 dark:text-white sm:text-xl'>
-									Step 3: Review & Launch Property
+								<h2 className='font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+									Review & Launch Property
 								</h2>
-								<p className='mt-1 text-xs text-slate-500 dark:text-slate-400'>
-									Please confirm your PG/Hostel details before creating your
-									dashboard.
+								<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+									Confirm your PG/Hostel details before creating your dashboard.
 								</p>
 							</div>
 
 							{/* Summary Card */}
-							<div className='rounded-2xl border border-[#E8E3D8] bg-slate-50/70 p-4 dark:border-[#1E382B] dark:bg-[#0A1F17] sm:p-5'>
-								<div className='flex items-start justify-between gap-3'>
+							<div className='rounded-xl border border-slate-200/90 bg-slate-50/60 p-3.5 dark:border-slate-800 dark:bg-[#0A1F17] sm:p-4.5'>
+								<div className='flex items-start justify-between gap-2.5'>
 									<div>
-										<h3 className='font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+										<h3 className='font-satoshi text-base font-bold text-slate-900 dark:text-white'>
 											{name}
 										</h3>
 										<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
@@ -528,21 +717,34 @@ export default function PropertySetupWizard({
 									</Badge>
 								</div>
 
-								{/* Badges */}
-								<div className='mt-3.5 flex flex-wrap gap-2 border-t border-[#E8E3D8] pt-3 text-xs dark:border-[#1E382B]'>
-									<span className='inline-flex items-center gap-1 rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'>
-										{type === "PG" ? "🏠" : "🏢"} {getTypeLabel(type)}
+								{/* Badges with Clean Vector Icons */}
+								<div className='mt-3 flex flex-wrap gap-1.5 border-t border-slate-200/80 pt-2.5 text-xs dark:border-slate-800'>
+									<span className='inline-flex items-center gap-1.5 rounded-lg border border-emerald-200/70 bg-emerald-100/70 px-2.5 py-1 text-xs font-semibold text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950 dark:text-emerald-300'>
+										{type === "PG" ? (
+											<IconHouse className='size-3.5 text-emerald-700 dark:text-emerald-300' />
+										) : (
+											<IconBuilding className='size-3.5 text-emerald-700 dark:text-emerald-300' />
+										)}
+										<span>{getTypeLabel(type)}</span>
 									</span>
-									<span className='inline-flex items-center gap-1 rounded-lg bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-300'>
-										👥 {getGenderLabel(gender)}
+
+									<span className='inline-flex items-center gap-1.5 rounded-lg border border-blue-200/70 bg-blue-100/70 px-2.5 py-1 text-xs font-semibold text-blue-800 dark:border-blue-800/60 dark:bg-blue-950 dark:text-blue-300'>
+										{gender === "BOYS" ? (
+											<IconUserMale className='size-3.5 text-blue-700 dark:text-blue-300' />
+										) : gender === "GIRLS" ? (
+											<IconUserFemale className='size-3.5 text-blue-700 dark:text-blue-300' />
+										) : (
+											<IconUsersCoed className='size-3.5 text-blue-700 dark:text-blue-300' />
+										)}
+										<span>{getGenderLabel(gender)}</span>
 									</span>
 								</div>
 
 								{/* Details Table */}
-								<div className='mt-3.5 space-y-2 border-t border-[#E8E3D8] pt-3 text-xs dark:border-[#1E382B]'>
+								<div className='mt-3 space-y-1.5 border-t border-slate-200/80 pt-2.5 text-xs dark:border-slate-800'>
 									<div className='flex items-start justify-between gap-2'>
 										<span className='text-slate-500 dark:text-slate-400'>
-											Full Address
+											Address
 										</span>
 										<span className='text-right font-medium text-slate-800 dark:text-slate-200'>
 											{address}
@@ -550,7 +752,7 @@ export default function PropertySetupWizard({
 									</div>
 									<div className='flex items-center justify-between'>
 										<span className='text-slate-500 dark:text-slate-400'>
-											Registered Owner
+											Owner
 										</span>
 										<span className='font-medium text-slate-800 dark:text-slate-200'>
 											{ownerName}
@@ -559,9 +761,9 @@ export default function PropertySetupWizard({
 								</div>
 							</div>
 
-							{/* Callout Notice */}
-							<div className='flex items-start gap-2.5 rounded-xl border border-emerald-100 bg-emerald-50/70 p-3 text-xs text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200 sm:p-3.5'>
-								<span className='text-base'>💡</span>
+							{/* Callout Notice with Vector SVG */}
+							<div className='flex items-start gap-2 rounded-xl border border-emerald-100 bg-emerald-50/50 p-2.5 text-xs text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-200 sm:p-3'>
+								<IconInfo className='mt-0.5 size-4 shrink-0 text-emerald-700 dark:text-emerald-300' />
 								<p className='leading-relaxed'>
 									Your initial PG/Hostel record will be saved securely. Room
 									allocations, floor plans, and resident check-ins can be
@@ -570,7 +772,7 @@ export default function PropertySetupWizard({
 							</div>
 
 							{/* Final Action Buttons */}
-							<div className='flex items-center gap-2.5 pt-2 sm:gap-3'>
+							<div className='flex items-center gap-2 pt-1 sm:gap-3 sm:pt-2'>
 								<Button
 									type='button'
 									variant='outline'
@@ -578,8 +780,9 @@ export default function PropertySetupWizard({
 									disabled={loading}
 									onClick={() => setStep(2)}
 									className='w-1/3'
+									icon={<IconArrowLeft className='size-4' />}
 								>
-									← Edit
+									Edit
 								</Button>
 								<Button
 									type='button'
@@ -588,8 +791,9 @@ export default function PropertySetupWizard({
 									isLoading={loading}
 									onClick={handleFinalSubmit}
 									className='w-2/3'
+									icon={<IconShieldCheck className='size-4' />}
 								>
-									Confirm & Launch PG/Hostel
+									Confirm & Launch
 								</Button>
 							</div>
 						</div>

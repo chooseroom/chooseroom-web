@@ -51,7 +51,7 @@ export default async function PropertySetupPage() {
 	}
 
 	return (
-		<main className='min-h-screen bg-[#FBF9F5] px-4 py-6 dark:bg-[#0E1713] sm:px-6 lg:px-8'>
+		<main className='min-h-screen bg-[#FBF9F5] px-3 py-4 dark:bg-[#0E1713] sm:px-6 sm:py-8 lg:px-8'>
 			<PropertySetupWizard ownerName={dbUser.name || "Owner"} />
 		</main>
 	);
