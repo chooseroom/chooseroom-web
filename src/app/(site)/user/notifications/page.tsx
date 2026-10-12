@@ -1,22 +1,18 @@
 import Breadcrumb from "@/components/Common/Dashboard/Breadcrumb";
 import React from "react";
 import { Metadata } from "next";
-import Notification from "@/components/Common/Notification";
+import NotificationsView from "@/components/Common/NotificationsView";
 
 export const metadata: Metadata = {
-	title: `Notifications - ${process.env.SITE_NAME}`,
-	description: `Notifications Description`,
+	title: `Notifications | Choose Ghar Owner`,
+	description: `Property, onboarding, and room management notifications`,
 };
 
 const NotificationPage = () => {
-	const data = [1, 2, 3, 4, 5, 6, 7];
-
 	return (
-		<div className='md:px-20'>
-			<Breadcrumb pageTitle='Notifications' />
-			{data?.map((data) => (
-				<Notification key={data} />
-			))}
+		<div className='space-y-6 pb-12'>
+			<Breadcrumb pageTitle='Owner Notifications' />
+			<NotificationsView role='BUSINESS_OWNER' />
 		</div>
 	);
 };

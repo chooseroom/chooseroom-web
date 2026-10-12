@@ -23,7 +23,7 @@ export default function Header({ openSidebar, setOpenSidebar }: any) {
 				{t("welcome")} {session?.user?.name}! 👋
 			</p>
 
-			<div className='flex w-full items-center justify-end gap-4'>
+			<div className='flex items-center justify-end gap-2 sm:gap-3.5'>
 				<ThemeToggler />
 				<Notifications role={session?.user?.role as string} />
 				<AccountButton user={session?.user} />

@@ -1,56 +1,175 @@
 "use client";
-import { useTranslations } from "next-intl";
+
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import Notification from "./NotificationItem";
+import axios from "axios";
+import NotificationItem from "./NotificationItem";
+import { SystemNotification } from "@/app/api/notifications/route";
 
 export default function Notifications({ role }: { role?: string }) {
-	const [showNotification, setShowNotification] = useState(false);
-	const [showDot, setShowDot] = useState(true);
+	const [isOpen, setIsOpen] = useState(false);
+	const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
+	const [notifications, setNotifications] = useState<SystemNotification[]>([]);
+	const [readIds, setReadIds] = useState<string[]>([]);
+	const [dismissedIds, setDismissedIds] = useState<string[]>([]);
+	const [loading, setLoading] = useState(false);
 
-	const t = useTranslations("header.notification_menu");
+	const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-	const handleShowNotification = () => {
-		setShowNotification(!showNotification);
-		setShowDot(false);
-	};
+	// Safe storage key based on role
+	const storagePrefix = `cg_notifs_${role?.toLowerCase() || "user"}`;
 
-	// ===== click outside of modal =====
-	const divRef = useRef<HTMLDivElement | null>(null);
+	// Load stored state from localStorage
+	useEffect(() => {
+		try {
+			const savedRead = localStorage.getItem(`${storagePrefix}_read`);
+			const savedDismissed = localStorage.getItem(`${storagePrefix}_dismissed`);
+			if (savedRead) setReadIds(JSON.parse(savedRead));
+			if (savedDismissed) setDismissedIds(JSON.parse(savedDismissed));
+		} catch {
+			// localStorage unavailable or restricted
+		}
+	}, [storagePrefix]);
+
+	// Fetch notifications from API
+	const fetchNotifications = useCallback(async () => {
+		try {
+			setLoading(true);
+			const res = await axios.get("/api/notifications");
+			if (res.data?.notifications) {
+				setNotifications(res.data.notifications);
+			}
+		} catch (err) {
+			console.error("Failed to load notifications:", err);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
 
 	useEffect(() => {
-		if (typeof window !== "undefined") {
-			const handleClickOutside = (event: MouseEvent) => {
-				if (divRef.current && !divRef.current.contains(event.target as Node)) {
-					setShowNotification(false);
-				}
-			};
+		fetchNotifications();
+	}, [fetchNotifications]);
 
-			document.addEventListener("mousedown", handleClickOutside);
-			return () => {
-				document.removeEventListener("mousedown", handleClickOutside);
-			};
+	// Toggle dropdown
+	const handleToggle = () => {
+		setIsOpen((prev) => !prev);
+		if (!isOpen) {
+			// Re-fetch on open for freshness
+			fetchNotifications();
 		}
-	});
+	};
+
+	// Mark all as read
+	const handleMarkAllRead = () => {
+		const allIds = notifications.map((n) => n.id);
+		const updated = Array.from(new Set([...readIds, ...allIds]));
+		setReadIds(updated);
+		try {
+			localStorage.setItem(`${storagePrefix}_read`, JSON.stringify(updated));
+		} catch {
+			// silent fallback
+		}
+	};
+
+	// Mark single notification as read
+	const handleMarkRead = (id: string) => {
+		if (!readIds.includes(id)) {
+			const updated = [...readIds, id];
+			setReadIds(updated);
+			try {
+				localStorage.setItem(`${storagePrefix}_read`, JSON.stringify(updated));
+			} catch {
+				// silent fallback
+			}
+		}
+		setIsOpen(false);
+	};
+
+	// Dismiss single notification
+	const handleDismiss = (e: React.MouseEvent, id: string) => {
+		e.stopPropagation();
+		e.preventDefault();
+		const updated = [...dismissedIds, id];
+		setDismissedIds(updated);
+		try {
+			localStorage.setItem(
+				`${storagePrefix}_dismissed`,
+				JSON.stringify(updated)
+			);
+		} catch {
+			// silent fallback
+		}
+	};
+
+	// Click outside & Escape key listeners
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(e.target as Node)
+			) {
+				setIsOpen(false);
+			}
+		};
+
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				setIsOpen(false);
+			}
+		};
+
+		if (isOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+			document.addEventListener("keydown", handleKeyDown);
+		}
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isOpen]);
+
+	// Active filtered notifications
+	const visibleNotifications = notifications.filter(
+		(n) => !dismissedIds.includes(n.id)
+	);
+	const unreadNotifications = visibleNotifications.filter(
+		(n) => !readIds.includes(n.id)
+	);
+	const unreadCount = unreadNotifications.length;
+
+	const displayedList =
+		activeTab === "unread" ? unreadNotifications : visibleNotifications;
+
+	const targetNotificationsUrl =
+		role?.toLowerCase() === "admin"
+			? "/admin/notifications"
+			: "/user/notifications";
 
 	return (
-		<div className='relative' ref={divRef}>
+		<div className='relative' ref={dropdownRef}>
+			{/* Bell Button - Visible on all devices (mobile, tablet, desktop) */}
 			<button
-				aria-label='Notification'
-				onClick={handleShowNotification}
-				className='relative hidden aspect-square w-12 cursor-pointer items-center justify-center rounded-full border border-stroke bg-gray-2 text-dark hover:bg-gray-3 dark:border-stroke-dark dark:bg-gray-dark dark:text-white xsm:flex'
+				type='button'
+				aria-label={`Notifications, ${unreadCount} unread`}
+				aria-expanded={isOpen}
+				onClick={handleToggle}
+				className='relative flex h-9.5 w-9.5 cursor-pointer items-center justify-center rounded-full border border-stroke bg-gray-2 text-dark transition-colors duration-200 hover:bg-gray-3 hover:text-primary dark:border-stroke-dark dark:bg-gray-dark dark:text-white dark:hover:bg-slate-800 dark:hover:text-primary sm:h-10 sm:w-10'
 			>
-				<span
-					className='absolute right-[13px] top-3 aspect-square w-2.5 rounded-full border-2 border-gray-2  bg-red-light dark:border-stroke-dark'
-					hidden={!showDot}
-				></span>
+				{/* Unread Badge Counter */}
+				{unreadCount > 0 && (
+					<span className='absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-gray-dark'>
+						{unreadCount > 9 ? "9+" : unreadCount}
+					</span>
+				)}
+
+				{/* Bell SVG */}
 				<svg
-					width='20'
-					height='20'
+					width='19'
+					height='19'
 					viewBox='0 0 20 20'
 					fill='none'
 					xmlns='http://www.w3.org/2000/svg'
-					className='text-dark dark:text-gray'
+					className='transition-transform duration-200 group-hover:scale-110'
 				>
 					<path
 						fillRule='evenodd'
@@ -61,31 +180,123 @@ export default function Notifications({ role }: { role?: string }) {
 				</svg>
 			</button>
 
-			<div
-				className='absolute left-0 right-0 top-12 z-99999 mx-auto w-[250px] rounded-md bg-white px-4 shadow-md dark:bg-gray-dark dark:shadow-[0px_1px_4px_1px_rgba(255,200,255,0.08)] md:left-auto md:top-17.5 md:w-[400px]'
-				hidden={!showNotification}
-			>
-				<h3 className='text-md mb-4 border-b border-stroke p-4 text-dark dark:border-stroke-dark dark:text-white'>
-					{t("title")}
-				</h3>
+			{/* Dropdown Popup - Completely Responsive on Mobile, Tablet & Desktop */}
+			{isOpen && (
+				<div
+					role='region'
+					aria-label='Notifications list'
+					className='absolute right-0 top-full z-99999 mt-2.5 w-[calc(100vw-1.5rem)] max-w-[380px] origin-top-right rounded-xl border border-slate-200/90 bg-white shadow-xl dark:border-slate-800 dark:bg-gray-dark dark:shadow-2xl sm:w-[400px]'
+				>
+					{/* Dropdown Top Bar */}
+					<div className='flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-800'>
+						<div className='flex items-center gap-2'>
+							<h3 className='font-satoshi text-sm font-bold text-slate-900 dark:text-white sm:text-base'>
+								Notifications
+							</h3>
+							{unreadCount > 0 && (
+								<span className='rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary dark:bg-primary/20'>
+									{unreadCount} new
+								</span>
+							)}
+						</div>
 
-				{Array.from({ length: 3 }).map((_, i) => (
-					<Notification
-						key={i}
-						link={`/${role?.toLowerCase()}/notifications`}
-					/>
-				))}
+						{unreadCount > 0 && (
+							<button
+								type='button'
+								onClick={handleMarkAllRead}
+								className='dark:text-primary-light text-xs font-medium text-primary transition hover:underline'
+							>
+								Mark all read
+							</button>
+						)}
+					</div>
 
-				<div className='mt-5 flex w-full border-t border-stroke py-4 text-center dark:border-stroke-dark'>
-					<Link
-						href={`/${role?.toLowerCase()}/notifications`}
-						onClick={() => setShowNotification(false)}
-						className='text-md w-full rounded-md border border-stroke bg-gray py-3  text-dark hover:bg-gray/40 dark:border-stroke-dark dark:bg-slate-700 dark:text-white'
-					>
-						{t("see_all")}
-					</Link>
+					{/* Tab Filters */}
+					<div className='flex border-b border-slate-100 px-3 pt-2 dark:border-slate-800'>
+						<button
+							type='button'
+							onClick={() => setActiveTab("all")}
+							className={`relative px-3 pb-2 text-xs font-semibold transition ${
+								activeTab === "all"
+									? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+									: "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+							}`}
+						>
+							All ({visibleNotifications.length})
+						</button>
+						<button
+							type='button'
+							onClick={() => setActiveTab("unread")}
+							className={`relative px-3 pb-2 text-xs font-semibold transition ${
+								activeTab === "unread"
+									? "text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+									: "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+							}`}
+						>
+							Unread ({unreadCount})
+						</button>
+					</div>
+
+					{/* Scrollable Notification List */}
+					<div className='scrollbar-thin max-h-[340px] overflow-y-auto p-2 sm:max-h-[380px]'>
+						{loading && notifications.length === 0 ? (
+							<div className='flex items-center justify-center py-8 text-xs text-slate-400'>
+								<div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+								Loading updates...
+							</div>
+						) : displayedList.length === 0 ? (
+							<div className='py-8 text-center'>
+								<div className='mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'>
+									<svg
+										className='h-5 w-5'
+										fill='none'
+										viewBox='0 0 24 24'
+										stroke='currentColor'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth={1.5}
+											d='M5 13l4 4L19 7'
+										/>
+									</svg>
+								</div>
+								<p className='text-xs font-semibold text-slate-700 dark:text-slate-300'>
+									All caught up!
+								</p>
+								<p className='mt-0.5 text-[11px] text-slate-400'>
+									{activeTab === "unread"
+										? "No unread notifications right now."
+										: "No notifications found."}
+								</p>
+							</div>
+						) : (
+							<div className='space-y-1'>
+								{displayedList.map((item) => (
+									<NotificationItem
+										key={item.id}
+										notification={item}
+										isRead={readIds.includes(item.id)}
+										onItemClick={() => handleMarkRead(item.id)}
+										onDismiss={(e) => handleDismiss(e, item.id)}
+									/>
+								))}
+							</div>
+						)}
+					</div>
+
+					{/* Footer Link */}
+					<div className='border-t border-slate-100 p-2.5 dark:border-slate-800'>
+						<Link
+							href={targetNotificationsUrl}
+							onClick={() => setIsOpen(false)}
+							className='flex w-full items-center justify-center rounded-lg bg-slate-50 py-2 text-center text-xs font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-primary dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-[13px]'
+						>
+							See All Notifications
+						</Link>
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 }
