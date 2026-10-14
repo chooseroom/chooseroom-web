@@ -2,13 +2,18 @@ import { Badge, Button, Card, CardContent } from "@/components/Common/UI";
 import { getAuthSession } from "@/libs/auth";
 import { formatIndianMobile, formatINR } from "@/libs/formatters";
 import { prisma } from "@/libs/prismaDb";
+import {
+	calculateRentSummary,
+	formatBillingPeriod,
+	getBillingPeriodString,
+} from "@/libs/rentLedger";
 import { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-	title: "Owner Dashboard",
-	description: "Operations dashboard for Choose Ghar PG and hostel owners.",
+	title: "Owner Dashboard | ChooseBed",
+	description: "Operations dashboard for ChooseBed PG and hostel owners.",
 };
 
 export const dynamic = "force-dynamic";
@@ -38,6 +43,23 @@ export default async function OwnerDashboardPage() {
 			setupCompleted: true,
 			properties: {
 				orderBy: { createdAt: "desc" },
+				include: {
+					rooms: {
+						orderBy: [{ floor: "asc" }, { roomNumber: "asc" }],
+						include: {
+							beds: {
+								orderBy: { bedNumber: "asc" },
+							},
+						},
+					},
+					residents: {
+						orderBy: [{ status: "asc" }, { checkInDate: "desc" }],
+						include: {
+							room: { select: { roomNumber: true, floor: true } },
+							bed: { select: { bedNumber: true } },
+						},
+					},
+				},
 			},
 		},
 	});
@@ -57,6 +79,79 @@ export default async function OwnerDashboardPage() {
 
 	const activeProperty = dbUser.properties[0];
 	const totalProperties = dbUser.properties.length;
+
+	// Calculate operational metrics across all owner properties (or active property)
+	const allRooms = dbUser.properties.flatMap((p) => p.rooms);
+	const totalRooms = allRooms.length;
+	const allBeds = allRooms.flatMap((r) => r.beds);
+	const totalBeds = allBeds.length;
+	const occupiedBeds = allBeds.filter((b) => b.status === "OCCUPIED").length;
+	const availableBeds = allBeds.filter((b) => b.status === "AVAILABLE").length;
+	const occupancyPercentage =
+		totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+
+	// Resident metrics
+	const allResidents = dbUser.properties.flatMap((p) => p.residents || []);
+	const activeResidents = allResidents.filter((r) => r.status === "ACTIVE");
+	const activeResidentCount = activeResidents.length;
+
+	// Phase F: Query all rent charges and payments across owner properties
+	const ownerPropertyIds = dbUser.properties.map((p) => p.id);
+	const allRentCharges = await prisma.rentCharge.findMany({
+		where: { propertyId: { in: ownerPropertyIds } },
+		include: {
+			payments: { select: { id: true, amount: true, paymentDate: true } },
+		},
+	});
+
+	const currentBillingPeriod = getBillingPeriodString();
+	const now = new Date();
+	const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+	const currentMonthEnd = new Date(
+		now.getFullYear(),
+		now.getMonth() + 1,
+		0,
+		23,
+		59,
+		59,
+		999
+	);
+
+	let totalOutstandingRent = 0;
+	let totalOverdueRent = 0;
+	let overdueChargesCount = 0;
+	const residentsWithOutstandingSet = new Set<string>();
+
+	let monthCollectionCurrentDues = 0;
+	let monthCollectionOlderDues = 0;
+
+	allRentCharges.forEach((charge) => {
+		const summary = calculateRentSummary(charge, now);
+		if (summary.remainingBalance > 0) {
+			totalOutstandingRent += summary.remainingBalance;
+			residentsWithOutstandingSet.add(charge.residentId);
+			if (summary.isOverdue) {
+				totalOverdueRent += summary.remainingBalance;
+				overdueChargesCount++;
+			}
+		}
+
+		// Calculate payments received during this calendar month
+		charge.payments.forEach((p) => {
+			const pDate = new Date(p.paymentDate);
+			if (pDate >= currentMonthStart && pDate <= currentMonthEnd) {
+				if (charge.billingPeriod === currentBillingPeriod) {
+					monthCollectionCurrentDues += p.amount;
+				} else {
+					monthCollectionOlderDues += p.amount;
+				}
+			}
+		});
+	});
+
+	const totalCollectedThisMonth =
+		monthCollectionCurrentDues + monthCollectionOlderDues;
+	const residentsWithOutstandingCount = residentsWithOutstandingSet.size;
 
 	const formatPropertyType = (t: string) => {
 		const typeLabels: Record<string, string> = {
@@ -192,14 +287,28 @@ export default async function OwnerDashboardPage() {
 							</div>
 							<div className='mt-2 flex items-baseline gap-2'>
 								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
-									0
+									{totalRooms}
 								</span>
 								<span className='text-xs text-body dark:text-gray-4'>
 									Rooms configured
 								</span>
 							</div>
 							<p className='mt-2 text-xs text-body dark:text-gray-4'>
-								Room layout setup in Phase E
+								{totalRooms > 0 ? (
+									<Link
+										href='/user/rooms'
+										className='font-medium text-emerald-800 hover:underline dark:text-emerald-400'
+									>
+										View {totalRooms} rooms →
+									</Link>
+								) : (
+									<Link
+										href='/user/rooms?action=add'
+										className='font-medium text-emerald-800 hover:underline dark:text-emerald-400'
+									>
+										+ Add first room
+									</Link>
+								)}
 							</p>
 						</CardContent>
 					</Card>
@@ -229,39 +338,196 @@ export default async function OwnerDashboardPage() {
 							</div>
 							<div className='mt-2 flex items-baseline gap-2'>
 								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
-									0%
+									{totalBeds > 0 ? `${occupancyPercentage}%` : "0%"}
 								</span>
 								<span className='text-xs text-body dark:text-gray-4'>
-									0 / 0 Beds occupied
+									{occupiedBeds} / {totalBeds} Beds occupied
 								</span>
 							</div>
 							<p className='mt-2 text-xs text-body dark:text-gray-4'>
-								Ready for room allocations
+								{totalBeds === 0
+									? "No beds configured yet"
+									: `${availableBeds} beds available for allocation`}
 							</p>
 						</CardContent>
 					</Card>
 
-					{/* Monthly Rent Collection */}
+					{/* Active Residents */}
 					<Card>
 						<CardContent className='p-5'>
 							<div className='flex items-center justify-between'>
 								<span className='text-xs font-medium text-body dark:text-gray-4'>
-									Monthly Rent Collections
+									Active Residents
 								</span>
-								<span className='rounded-full bg-amber-500/10 p-2 text-xs font-semibold text-amber-600'>
-									₹
+								<span className='rounded-full bg-blue-500/10 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400'>
+									<svg
+										className='size-4'
+										fill='none'
+										viewBox='0 0 24 24'
+										stroke='currentColor'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth='2'
+											d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
+										/>
+									</svg>
 								</span>
 							</div>
 							<div className='mt-2 flex items-baseline gap-2'>
 								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
-									{formatINR(0)}
+									{activeResidentCount}
 								</span>
 								<span className='text-xs text-body dark:text-gray-4'>
-									/ month
+									{activeResidentCount === 1
+										? "Active resident"
+										: "Active residents"}
 								</span>
 							</div>
 							<p className='mt-2 text-xs text-body dark:text-gray-4'>
-								Rent ledger launches in Phase F
+								{activeResidentCount > 0 ? (
+									<Link
+										href='/user/residents'
+										className='font-medium text-emerald-800 hover:underline dark:text-emerald-400'
+									>
+										Manage {activeResidentCount} resident(s) →
+									</Link>
+								) : (
+									<Link
+										href='/user/residents?action=add'
+										className='font-medium text-emerald-800 hover:underline dark:text-emerald-400'
+									>
+										+ Check in first resident
+									</Link>
+								)}
+							</p>
+						</CardContent>
+					</Card>
+				</div>
+			</div>
+
+			{/* Rent & Collections Overview (Live Ledger Data) */}
+			<div>
+				<div className='mb-3 flex items-center justify-between'>
+					<div>
+						<h2 className='text-xs font-semibold uppercase tracking-wider text-body dark:text-gray-4'>
+							Rent & Collections Overview
+						</h2>
+						<span className='text-[11px] text-slate-500 dark:text-slate-400'>
+							{formatBillingPeriod(currentBillingPeriod)} • Live Ledger
+						</span>
+					</div>
+					<Link
+						href='/user/billing'
+						className='text-xs font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+					>
+						Open Full Rent Ledger →
+					</Link>
+				</div>
+
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+					{/* Collected This Month */}
+					<Card>
+						<CardContent className='p-5'>
+							<div className='flex items-center justify-between'>
+								<span className='text-xs font-medium text-body dark:text-gray-4'>
+									Collected This Month
+								</span>
+								<span className='rounded-full bg-emerald-500/10 p-2 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400'>
+									✓
+								</span>
+							</div>
+							<div className='mt-2 flex items-baseline gap-2'>
+								<span className='font-satoshi text-2xl font-bold text-emerald-700 dark:text-emerald-400'>
+									{formatINR(totalCollectedThisMonth)}
+								</span>
+							</div>
+							<p className='mt-2 text-[11px] text-body dark:text-gray-4'>
+								{monthCollectionCurrentDues > 0 || monthCollectionOlderDues > 0
+									? `Current: ${formatINR(monthCollectionCurrentDues)} • Older Dues: ${formatINR(monthCollectionOlderDues)}`
+									: "No payments recorded yet this month"}
+							</p>
+						</CardContent>
+					</Card>
+
+					{/* Total Outstanding Dues */}
+					<Card>
+						<CardContent className='p-5'>
+							<div className='flex items-center justify-between'>
+								<span className='text-xs font-medium text-body dark:text-gray-4'>
+									Total Outstanding Dues
+								</span>
+								<span className='rounded-full bg-blue-500/10 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400'>
+									⏳
+								</span>
+							</div>
+							<div className='mt-2 flex items-baseline gap-2'>
+								<span className='font-satoshi text-2xl font-bold text-dark dark:text-white'>
+									{formatINR(totalOutstandingRent)}
+								</span>
+							</div>
+							<p className='mt-2 text-xs text-body dark:text-gray-4'>
+								{residentsWithOutstandingCount === 1
+									? "1 resident with pending dues"
+									: `${residentsWithOutstandingCount} residents with pending dues`}
+							</p>
+						</CardContent>
+					</Card>
+
+					{/* Overdue Balance */}
+					<Card>
+						<CardContent className='p-5'>
+							<div className='flex items-center justify-between'>
+								<span className='text-xs font-medium text-body dark:text-gray-4'>
+									Overdue Rent
+								</span>
+								<span className='rounded-full bg-rose-500/10 p-2 text-rose-600 dark:bg-rose-950 dark:text-rose-400'>
+									⚠️
+								</span>
+							</div>
+							<div className='mt-2 flex items-baseline gap-2'>
+								<span
+									className={`font-satoshi text-2xl font-bold ${
+										totalOverdueRent > 0
+											? "text-rose-600 dark:text-rose-400"
+											: "text-dark dark:text-white"
+									}`}
+								>
+									{formatINR(totalOverdueRent)}
+								</span>
+							</div>
+							<p className='mt-2 text-xs text-body dark:text-gray-4'>
+								{overdueChargesCount === 1
+									? "1 charge past due date"
+									: `${overdueChargesCount} charges past due date`}
+							</p>
+						</CardContent>
+					</Card>
+
+					{/* Ledger Navigation / Quick Action */}
+					<Card>
+						<CardContent className='p-5'>
+							<div className='flex items-center justify-between'>
+								<span className='text-xs font-medium text-body dark:text-gray-4'>
+									Rent Ledger Actions
+								</span>
+								<span className='rounded-full bg-slate-100 p-2 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+									📑
+								</span>
+							</div>
+							<div className='mt-2'>
+								<span className='font-satoshi text-sm font-bold text-dark dark:text-white'>
+									{allRentCharges.length} Recorded Charges
+								</span>
+							</div>
+							<p className='mt-2 text-xs'>
+								<Link
+									href='/user/billing'
+									className='font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+								>
+									Record payment / print receipts →
+								</Link>
 							</p>
 						</CardContent>
 					</Card>
@@ -330,79 +596,229 @@ export default async function OwnerDashboardPage() {
 						</CardContent>
 					</Card>
 
-					{/* Rooms & Beds Inventory Empty State */}
-					<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
-						<CardContent className='p-6 text-center sm:p-8'>
-							<div className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
-								<svg
-									className='size-6'
-									fill='none'
-									viewBox='0 0 24 24'
-									stroke='currentColor'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth='2'
-										d='M4 6h16M4 10h16M4 14h16M4 18h16'
-									/>
-								</svg>
-							</div>
+					{/* Rooms & Beds Inventory Live Overview or Empty State */}
+					{totalRooms === 0 ? (
+						<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+							<CardContent className='p-6 text-center sm:p-8'>
+								<div className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'>
+									<svg
+										className='size-6'
+										fill='none'
+										viewBox='0 0 24 24'
+										stroke='currentColor'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth='2'
+											d='M4 6h16M4 10h16M4 14h16M4 18h16'
+										/>
+									</svg>
+								</div>
 
-							<h3 className='mt-4 font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
-								No Rooms or Beds Configured Yet
-							</h3>
+								<h3 className='mt-4 font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+									No Rooms or Beds Configured Yet
+								</h3>
 
-							<p className='mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm'>
-								Your PG/Hostel building is officially registered! Floor-wise
-								room setup, single/double sharing allocations, and real-time bed
-								inventories will be configured here in Phase E.
-							</p>
+								<p className='mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm'>
+									Your PG/Hostel building is officially registered! Start adding
+									your floor-wise room layouts, single/double sharing
+									allocations, and real-time bed inventories.
+								</p>
 
-							<div className='mt-5 flex items-center justify-center gap-2'>
-								<span className='inline-flex items-center rounded-lg bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'>
-									Phase E Roadmap • Room & Bed Layout Designer
-								</span>
-							</div>
-						</CardContent>
-					</Card>
+								<div className='mt-5 flex items-center justify-center gap-3'>
+									<Link href='/user/rooms?action=add'>
+										<Button variant='primary' size='sm'>
+											+ Add Your First Room
+										</Button>
+									</Link>
+									<Link href='/user/rooms'>
+										<Button variant='outline' size='sm'>
+											Open Rooms & Beds
+										</Button>
+									</Link>
+								</div>
+							</CardContent>
+						</Card>
+					) : (
+						<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+							<CardContent className='p-5 sm:p-6'>
+								<div className='flex flex-col justify-between gap-3 sm:flex-row sm:items-center'>
+									<div>
+										<span className='text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400'>
+											Live Inventory Overview
+										</span>
+										<h3 className='mt-1 font-satoshi text-lg font-bold text-slate-900 dark:text-white sm:text-xl'>
+											Configured Rooms & Bed Allocation
+										</h3>
+										<p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+											{totalRooms} room(s) with {totalBeds} total bed(s) in{" "}
+											{activeProperty.name}
+										</p>
+									</div>
+									<div className='flex items-center gap-2'>
+										<Link href='/user/rooms?action=add'>
+											<Button variant='outline' size='sm'>
+												+ Add Room
+											</Button>
+										</Link>
+										<Link href='/user/rooms'>
+											<Button variant='primary' size='sm'>
+												Manage All Rooms →
+											</Button>
+										</Link>
+									</div>
+								</div>
 
-					{/* Residents Management Empty State */}
-					<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
-						<CardContent className='p-6 text-center sm:p-8'>
-							<div className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
-								<svg
-									className='size-6'
-									fill='none'
-									viewBox='0 0 24 24'
-									stroke='currentColor'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth='2'
-										d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
-									/>
-								</svg>
-							</div>
+								{/* Recent rooms list */}
+								<div className='mt-4 divide-y divide-slate-100 border-t border-[#E8E3D8] pt-3 dark:divide-slate-800 dark:border-[#1E382B]'>
+									{activeProperty.rooms.slice(0, 4).map((r) => {
+										const avail = r.beds.filter(
+											(b) => b.status === "AVAILABLE"
+										).length;
+										return (
+											<div
+												key={r.id}
+												className='flex items-center justify-between py-2.5 text-xs'
+											>
+												<div className='flex items-center gap-3'>
+													<span className='rounded-lg bg-slate-100 px-2 py-1 font-bold text-slate-900 dark:bg-slate-800 dark:text-white'>
+														Room {r.roomNumber}
+													</span>
+													<span className='text-slate-500 dark:text-slate-400'>
+														{r.floor} • {r.sharing.toLowerCase()} sharing
+													</span>
+													<span className='rounded bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-900 dark:text-slate-300'>
+														{r.acType === "AC" ? "❄️ AC" : "Non-AC"}
+													</span>
+												</div>
+												<div className='flex items-center gap-2'>
+													<span className='font-semibold text-emerald-800 dark:text-emerald-400'>
+														{avail}/{r.beds.length} Available
+													</span>
+												</div>
+											</div>
+										);
+									})}
+								</div>
 
-							<h3 className='mt-4 font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
-								No Residents Checked In
-							</h3>
+								{activeProperty.rooms.length > 4 && (
+									<div className='mt-3 border-t border-slate-100 pt-2 text-center dark:border-slate-800'>
+										<Link
+											href='/user/rooms'
+											className='text-xs font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+										>
+											+ View remaining {activeProperty.rooms.length - 4} rooms
+											in {activeProperty.name} →
+										</Link>
+									</div>
+								)}
+							</CardContent>
+						</Card>
+					)}
 
-							<p className='mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm'>
-								Once your rooms and beds are created, you can onboard residents,
-								collect Aadhaar / KYC documents, and monitor digital check-in
-								records.
-							</p>
+					{/* Residents Management Section */}
+					{activeResidentCount > 0 ? (
+						<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+							<CardContent className='p-5 sm:p-6'>
+								<div className='flex items-center justify-between'>
+									<div>
+										<h3 className='font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+											Active Residents ({activeResidentCount})
+										</h3>
+										<p className='text-xs text-slate-500 dark:text-slate-400'>
+											Currently checked in across {activeProperty.name}
+										</p>
+									</div>
+									<Link href='/user/residents'>
+										<Button variant='outline' size='sm'>
+											View All →
+										</Button>
+									</Link>
+								</div>
 
-							<div className='mt-5 flex items-center justify-center gap-2'>
-								<span className='inline-flex items-center rounded-lg bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'>
-									Phase E Roadmap • Resident Onboarding & KYC
-								</span>
-							</div>
-						</CardContent>
-					</Card>
+								<div className='mt-4 divide-y divide-slate-100 border-t border-[#E8E3D8] pt-3 dark:divide-slate-800 dark:border-[#1E382B]'>
+									{activeResidents.slice(0, 4).map((r) => (
+										<div
+											key={r.id}
+											className='flex items-center justify-between py-2.5 text-xs'
+										>
+											<div className='flex items-center gap-3'>
+												<div className='flex size-8 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200'>
+													{r.name.charAt(0).toUpperCase()}
+												</div>
+												<div>
+													<p className='font-semibold text-slate-900 dark:text-white'>
+														{r.name}
+													</p>
+													<p className='text-[11px] text-slate-500 dark:text-slate-400'>
+														{r.phone}
+													</p>
+												</div>
+											</div>
+											<div className='text-right'>
+												<span className='rounded-lg bg-slate-100 px-2 py-0.5 font-bold text-slate-800 dark:bg-slate-800 dark:text-slate-200'>
+													Room {r.room.roomNumber} • Bed {r.bed.bedNumber}
+												</span>
+												<p className='mt-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400'>
+													{formatINR(r.monthlyRent)}/mo
+												</p>
+											</div>
+										</div>
+									))}
+								</div>
+
+								{activeResidents.length > 4 && (
+									<div className='mt-3 border-t border-slate-100 pt-2 text-center dark:border-slate-800'>
+										<Link
+											href='/user/residents'
+											className='text-xs font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+										>
+											+ View remaining {activeResidents.length - 4} residents →
+										</Link>
+									</div>
+								)}
+							</CardContent>
+						</Card>
+					) : (
+						<Card className='border-[#E8E3D8] bg-white shadow-sm dark:border-[#1E382B] dark:bg-[#071711]'>
+							<CardContent className='p-6 text-center sm:p-8'>
+								<div className='mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+									<svg
+										className='size-6'
+										fill='none'
+										viewBox='0 0 24 24'
+										stroke='currentColor'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth='2'
+											d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
+										/>
+									</svg>
+								</div>
+
+								<h3 className='mt-4 font-satoshi text-base font-bold text-slate-900 dark:text-white sm:text-lg'>
+									No Residents Checked In
+								</h3>
+
+								<p className='mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm'>
+									Now that your property is set up, you can onboard residents,
+									allocate available beds, and maintain digital check-in
+									records.
+								</p>
+
+								<div className='mt-5 flex items-center justify-center gap-2'>
+									<Link href='/user/residents?action=add'>
+										<Button variant='primary' size='sm'>
+											+ Onboard First Resident
+										</Button>
+									</Link>
+								</div>
+							</CardContent>
+						</Card>
+					)}
 				</div>
 
 				{/* Right 1 Col: Onboarding Roadmap Checklist */}
@@ -432,50 +848,124 @@ export default async function OwnerDashboardPage() {
 									</div>
 								</div>
 
-								{/* Step 2: Phase E */}
-								<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
-									<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
-										2
+								{/* Step 2: Rooms & Beds */}
+								{totalRooms > 0 ? (
+									<div className='flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3 dark:border-emerald-900 dark:bg-emerald-950/40'>
+										<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white'>
+											✓
+										</div>
+										<div>
+											<h4 className='text-xs font-bold text-emerald-950 dark:text-emerald-200'>
+												Step 2: Room & Bed Layouts
+											</h4>
+											<p className='mt-0.5 text-[11px] text-emerald-800 dark:text-emerald-300'>
+												{totalRooms} room(s) and {totalBeds} bed(s) configured.
+											</p>
+										</div>
 									</div>
-									<div>
-										<h4 className='text-xs font-bold text-dark dark:text-white'>
-											Step 2: Room & Bed Layouts (Phase E)
-										</h4>
-										<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
-											Add floors, 1/2/3 sharing rooms, and bed counts.
-										</p>
+								) : (
+									<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
+										<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+											2
+										</div>
+										<div className='flex-1'>
+											<h4 className='text-xs font-bold text-dark dark:text-white'>
+												Step 2: Room & Bed Layouts
+											</h4>
+											<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
+												Add floors, 1/2/3/4 sharing rooms, and bed counts.
+											</p>
+											<Link
+												href='/user/rooms?action=add'
+												className='mt-1 inline-block text-[11px] font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+											>
+												Configure now →
+											</Link>
+										</div>
 									</div>
-								</div>
+								)}
 
-								{/* Step 3: Phase E */}
-								<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
-									<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
-										3
+								{/* Step 3: Resident Check-In */}
+								{activeResidentCount > 0 ? (
+									<div className='flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3 dark:border-emerald-900 dark:bg-emerald-950/40'>
+										<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white'>
+											✓
+										</div>
+										<div>
+											<h4 className='text-xs font-bold text-emerald-950 dark:text-emerald-200'>
+												Step 3: Resident Check-In
+											</h4>
+											<p className='mt-0.5 text-[11px] text-emerald-800 dark:text-emerald-300'>
+												{activeResidentCount} resident(s) actively checked in.
+											</p>
+										</div>
 									</div>
-									<div>
-										<h4 className='text-xs font-bold text-dark dark:text-white'>
-											Step 3: Resident Check-In & KYC (Phase E)
-										</h4>
-										<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
-											Aadhaar verification, guardian details, and allotments.
-										</p>
+								) : (
+									<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
+										<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+											3
+										</div>
+										<div className='flex-1'>
+											<h4 className='text-xs font-bold text-dark dark:text-white'>
+												Step 3: Resident Check-In & Bed Allocation
+											</h4>
+											<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
+												Onboard residents and allocate available beds.
+											</p>
+											<Link
+												href='/user/residents?action=add'
+												className='mt-1 inline-block text-[11px] font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+											>
+												+ Check in resident →
+											</Link>
+										</div>
 									</div>
-								</div>
+								)}
 
-								{/* Step 4: Phase F */}
-								<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
-									<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
-										4
+								{/* Step 4: Rent Ledger & Dues Tracking (Phase F Active) */}
+								{allRentCharges.length > 0 ? (
+									<div className='flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3 dark:border-emerald-900 dark:bg-emerald-950/40'>
+										<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white'>
+											✓
+										</div>
+										<div className='flex-1'>
+											<h4 className='text-xs font-bold text-emerald-950 dark:text-emerald-200'>
+												Step 4: Rent Ledger & Payment Tracking
+											</h4>
+											<p className='mt-0.5 text-[11px] text-emerald-800 dark:text-emerald-300'>
+												{allRentCharges.length} rent charges recorded. Live
+												collections active.
+											</p>
+											<Link
+												href='/user/billing'
+												className='mt-1 inline-block text-[11px] font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+											>
+												Manage rent & dues →
+											</Link>
+										</div>
 									</div>
-									<div>
-										<h4 className='text-xs font-bold text-dark dark:text-white'>
-											Step 4: Automated Rent & Dues (Phase F)
-										</h4>
-										<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
-											UPI payment links, monthly dues, and PDF receipts.
-										</p>
+								) : (
+									<div className='flex items-start gap-3 rounded-xl border border-stroke p-3 dark:border-stroke-dark'>
+										<div className='flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+											4
+										</div>
+										<div className='flex-1'>
+											<h4 className='text-xs font-bold text-dark dark:text-white'>
+												Step 4: Rent Ledger & Dues Tracking
+											</h4>
+											<p className='mt-0.5 text-[11px] text-body dark:text-gray-4'>
+												Generate monthly rent charges, record Cash/UPI payments,
+												and print digital receipts.
+											</p>
+											<Link
+												href='/user/billing'
+												className='mt-1 inline-block text-[11px] font-semibold text-emerald-800 hover:underline dark:text-emerald-400'
+											>
+												Open rent ledger →
+											</Link>
+										</div>
 									</div>
-								</div>
+								)}
 							</div>
 						</CardContent>
 					</Card>
@@ -486,7 +976,7 @@ export default async function OwnerDashboardPage() {
 							<span className='text-base'>🇮🇳</span>
 							<div>
 								<h4 className='text-xs font-bold text-slate-900 dark:text-white'>
-									Choose Ghar Support
+									ChooseBed Support
 								</h4>
 								<p className='mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400'>
 									Need help configuring your property or managing multiple

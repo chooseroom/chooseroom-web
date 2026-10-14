@@ -24,7 +24,7 @@ export function PainPoints() {
 
 					<p className='mt-4 text-base leading-relaxed text-[#4A5550] dark:text-slate-300 sm:text-lg'>
 						Running a PG means managing residents, room types, and empty beds
-						every day. Choose Ghar gives you one clear, dependable place to see
+						every day. ChooseBed gives you one clear, dependable place to see
 						who is staying where.
 					</p>
 				</div>

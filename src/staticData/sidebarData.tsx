@@ -47,7 +47,6 @@ export const sidebarData = [
 		titleKey: "rooms_beds",
 		title: "Rooms & Beds",
 		path: "/user/rooms",
-		comingSoon: "Phase E",
 		icon: (
 			<svg
 				className='h-5 w-5'
@@ -69,7 +68,6 @@ export const sidebarData = [
 		titleKey: "residents",
 		title: "Residents",
 		path: "/user/residents",
-		comingSoon: "Phase E",
 		icon: (
 			<svg
 				className='h-5 w-5'
@@ -91,7 +89,6 @@ export const sidebarData = [
 		titleKey: "rent_payments",
 		title: "Rent & Dues",
 		path: "/user/billing",
-		comingSoon: "Phase F",
 		icon: (
 			<svg
 				className='h-5 w-5'

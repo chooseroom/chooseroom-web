@@ -83,7 +83,7 @@ function SigninForm() {
 							Sign In
 						</h2>
 						<p className='mt-1.5 text-xs text-slate-500 dark:text-slate-400 sm:text-sm'>
-							Access your Choose Ghar dashboard and PG/Hostel records.
+							Access your Choose Bed dashboard and PG/Hostel records.
 						</p>
 					</div>
 

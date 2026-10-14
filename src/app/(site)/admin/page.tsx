@@ -7,7 +7,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
 	title: "Overview",
 	description:
-		"Platform administration and owner management console for Choose Ghar.",
+		"Platform administration and owner management console for ChooseBed.",
 };
 
 export const dynamic = "force-dynamic";

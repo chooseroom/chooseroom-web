@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export const metadata: Metadata = {
 	title: "PG/Hostel Setup",
 	description:
-		"First-time property setup wizard for Choose Ghar PG and hostel owners.",
+		"First-time property setup wizard for ChooseBed PG and hostel owners.",
 };
 
 export const dynamic = "force-dynamic";

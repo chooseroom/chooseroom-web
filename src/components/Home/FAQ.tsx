@@ -6,11 +6,11 @@ import React, { useState } from "react";
 const faqs = [
 	{
 		q: "Do residents or students need to download an app or sign up?",
-		a: "No. Choose Ghar is strictly an owner management tool. You or your property manager record resident details and assign rooms directly. Residents do not need to download an app or create an account.",
+		a: "No. ChooseBed is strictly an owner management tool. You or your property manager record resident details and assign rooms directly. Residents do not need to download an app or create an account.",
 	},
 	{
-		q: "Can I use Choose Ghar for hostels and co-living spaces?",
-		a: "Yes. Whether you operate a 10-bed student PG, a 150-bed hostel, or a co-living property, Choose Ghar allows you to customize floors, AC and Non-AC rooms, and sharing types easily.",
+		q: "Can I use ChooseBed for hostels and co-living spaces?",
+		a: "Yes. Whether you operate a 10-bed student PG, a 150-bed hostel, or a co-living property, ChooseBed allows you to customize floors, AC and Non-AC rooms, and sharing types easily.",
 	},
 	{
 		q: "Can I configure AC and Non-AC rooms with different sharing types?",
@@ -18,7 +18,7 @@ const faqs = [
 	},
 	{
 		q: "Can I check empty beds on my mobile phone?",
-		a: "Yes. Choose Ghar works smoothly on mobile phones and tablets. You can check vacant beds or add a new resident directly from your phone browser while walking through your PG.",
+		a: "Yes. ChooseBed works smoothly on mobile phones and tablets. You can check vacant beds or add a new resident directly from your phone browser while walking through your PG.",
 	},
 	{
 		q: "Can I manage more than one PG from the same owner account?",

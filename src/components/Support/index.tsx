@@ -87,7 +87,7 @@ const Support = () => {
 						<div className='z-2 relative'>
 							<span className='inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300'>
 								<span className='h-1.5 w-1.5 rounded-full bg-[#E5A83B]' />
-								Choose Ghar Support
+								ChooseBed.com Support
 							</span>
 							<h2 className='mt-5 font-inter text-2xl font-bold tracking-tight text-white sm:text-3xl'>
 								{t("title")}

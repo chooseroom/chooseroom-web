@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import NotificationsView from "@/components/Common/NotificationsView";
 
 export const metadata: Metadata = {
-	title: `Notifications | Choose Ghar Admin`,
+	title: `Notifications | ChooseBed Admin`,
 	description: `System, owner registration and PG/Hostel property notifications`,
 };
 

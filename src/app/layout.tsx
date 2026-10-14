@@ -7,19 +7,20 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: {
-		default: "Choose Ghar | Smart PG & Hostel Management Software India",
-		template: "%s | Choose Ghar",
+		default: "Choose Bed | Smart PG & Hostel Management Software India (choosebed.com)",
+		template: "%s | Choose Bed",
 	},
 	description:
-		"Choose Ghar is the premier PG and hostel management platform for Indian property owners. Seamlessly manage rooms, track vacant beds, record tenant details, and prevent revenue loss.",
+		"Choose Bed (choosebed.com) is the premier PG and hostel management platform for Indian property owners. Seamlessly manage rooms, track vacant beds, record tenant details, and prevent revenue loss.",
 	keywords: [
+		"Choose Bed",
+		"choosebed.com",
 		"PG management software India",
 		"Hostel management software",
 		"Paying guest management system",
 		"PG room bed allocation",
 		"PG tenant record software",
 		"Co-living management software India",
-		"Choose Ghar",
 	],
 	icons: {
 		icon: "/images/logo/favicon.svg",

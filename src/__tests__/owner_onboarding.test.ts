@@ -49,7 +49,7 @@ function makeRequest(
 
 async function runOnboardingTests() {
 	console.log("=================================================");
-	console.log("Choose Ghar — Owner Onboarding Flow Test Suite");
+	console.log("ChooseBed — Owner Onboarding Flow Test Suite");
 	console.log("=================================================\n");
 
 	const testTimestamp = Date.now().toString().slice(-6);

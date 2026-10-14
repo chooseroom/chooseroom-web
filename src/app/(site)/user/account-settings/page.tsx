@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
-	title: `Account Settings - ${process.env.SITE_NAME || "Choose Ghar"}`,
+	title: `Account Settings - ${process.env.SITE_NAME || "ChooseBed"}`,
 	description:
 		"Manage your PG/Hostel owner profile, password, and security settings.",
 };

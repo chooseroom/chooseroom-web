@@ -1,8 +1,15 @@
+"use client";
+
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 import { OperationsPreview } from "./OperationsPreview";
 
 const Hero = () => {
+	const { data: session } = useSession();
+	const isLoggedIn = !!session?.user;
+	const dashboardHref = session?.user?.role === "ADMIN" ? "/admin" : "/user";
+
 	return (
 		<section className='relative overflow-hidden bg-[#FBF9F5] pb-16 pt-32 dark:bg-[#0E1713] sm:pb-20 sm:pt-36'>
 			{/* Subtle warm background glow */}
@@ -39,12 +46,21 @@ const Hero = () => {
 
 					{/* Simple CTAs */}
 					<div className='mt-8 flex flex-col items-center justify-center gap-3.5 sm:flex-row'>
-						<Link
-							href='/auth/signup'
-							className='w-full rounded-xl bg-[#0B2B20] px-7 py-3.5 text-center text-sm font-semibold text-white shadow-md transition-all hover:bg-[#133E2F] hover:shadow-lg dark:bg-white dark:text-[#0B2B20] dark:hover:bg-slate-100 sm:w-auto'
-						>
-							Register Your PG →
-						</Link>
+						{isLoggedIn ? (
+							<Link
+								href={dashboardHref}
+								className='w-full rounded-xl bg-[#0B2B20] px-7 py-3.5 text-center text-sm font-semibold text-white shadow-md transition-all hover:bg-[#133E2F] hover:shadow-lg dark:bg-white dark:text-[#0B2B20] dark:hover:bg-slate-100 sm:w-auto'
+							>
+								Go to Dashboard →
+							</Link>
+						) : (
+							<Link
+								href='/auth/signup'
+								className='w-full rounded-xl bg-[#0B2B20] px-7 py-3.5 text-center text-sm font-semibold text-white shadow-md transition-all hover:bg-[#133E2F] hover:shadow-lg dark:bg-white dark:text-[#0B2B20] dark:hover:bg-slate-100 sm:w-auto'
+							>
+								Register Your PG →
+							</Link>
+						)}
 						<a
 							href='#how-it-works'
 							className='w-full rounded-xl border border-[#D5CEBF] bg-white px-7 py-3.5 text-center text-sm font-semibold text-[#0B2B20] shadow-sm transition-all hover:bg-[#FAF8F5] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:w-auto'

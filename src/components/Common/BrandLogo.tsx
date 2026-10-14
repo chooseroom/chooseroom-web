@@ -15,10 +15,9 @@ export interface BrandLogoProps {
 }
 
 /**
- * Choose Ghar — Premium Brand Symbol
- * Concept B: "CG Geometric Monogram Sanctuary"
- * An interconnected architectural glyph merging 'C' (Choose / Shelter) and 'G' (Ghar / Doorway)
- * with a golden hearth keystone (#E5A83B) at its apex.
+ * Choose Bed — Premium Brand Symbol
+ * Modern architectural icon featuring an arched luxury bed, dual pillows,
+ * a dynamic emerald verified choice checkmark, and a golden keystone sparkle.
  */
 export function BrandSymbol({
 	size = "md",
@@ -47,41 +46,62 @@ export function BrandSymbol({
 				isMonochrome
 					? "bg-slate-900 text-white"
 					: isForcedDark
-						? "bg-[#133E2F] ring-1 ring-[#25634B]/60"
+						? "bg-[#0E2C22] ring-1 ring-[#2E7A5D]/60 shadow-[0_0_12px_rgba(52,211,153,0.15)]"
 						: isForcedLight
-							? "bg-[#0B2B20] ring-1 ring-[#0B2B20]/15"
-							: "bg-[#0B2B20] ring-1 ring-[#0B2B20]/15 dark:bg-[#133E2F] dark:ring-[#25634B]/60"
+							? "bg-[#082319] ring-1 ring-[#174A37]/60"
+							: "bg-[#082319] ring-1 ring-[#174A37]/60 dark:bg-[#0E2C22] dark:ring-[#2E7A5D]/60 dark:shadow-[0_0_12px_rgba(52,211,153,0.15)]"
 			} ${className}`}
 		>
 			<svg
-				className='h-[62%] w-[62%]'
+				className='h-[66%] w-[66%]'
 				viewBox='0 0 32 32'
 				fill='none'
 				xmlns='http://www.w3.org/2000/svg'
 				aria-hidden='true'
 			>
-				{/* Outer 'C' Ribbon (Shelter, Horizon & Community) */}
-				<path
-					d='M22.8 10.4C21 8.2 18.2 7 15.2 7C9.9 7 5.6 11 5.6 16.2C5.6 21.4 9.9 25.4 15.2 25.4C19.4 25.4 23 22.8 24.2 19'
-					stroke='#FFFFFF'
-					strokeWidth='2.8'
-					strokeLinecap='round'
-					strokeLinejoin='round'
+				{/* 1. Bed Frame & Headboard (Sleek, Bold Emerald Geometry) */}
+				{/* Headboard Post */}
+				<rect
+					x='5.5'
+					y='7.5'
+					width='3'
+					height='17'
+					rx='1.5'
+					fill={isMonochrome ? "#FFFFFF" : isForcedDark ? "#34D399" : "#10B981"}
+				/>
+				{/* Horizontal Base Rail */}
+				<rect
+					x='5.5'
+					y='19'
+					width='20.5'
+					height='3'
+					rx='0.8'
+					fill={isMonochrome ? "#FFFFFF" : isForcedDark ? "#34D399" : "#10B981"}
+				/>
+				{/* Footboard Leg */}
+				<rect
+					x='23.5'
+					y='19'
+					width='2.5'
+					height='5.5'
+					rx='1'
+					fill={isMonochrome ? "#FFFFFF" : isForcedDark ? "#34D399" : "#10B981"}
 				/>
 
-				{/* Inner 'G' Architectural Flow (Doorway, Floorplan & Threshold) */}
+				{/* 2. Cozy Pillow (Clean Organic Curve) */}
 				<path
-					d='M15.2 12C12.7 12 10.7 13.9 10.7 16.2C10.7 18.5 12.7 20.4 15.2 20.4C17.7 20.4 19.7 18.5 19.7 16.2V15.8H15.2'
-					stroke={isMonochrome ? "#FFFFFF" : "#34D399"}
-					strokeWidth='2.4'
-					strokeLinecap='round'
-					strokeLinejoin='round'
+					d='M8.5 16C8.5 12.2 11.8 11.2 14.5 12.2C15.5 12.6 16 14.2 15.5 16H8.5Z'
+					fill={isMonochrome ? "#CBD5E1" : "#FFFFFF"}
 				/>
 
-				{/* Golden Keystone / Hearth Diamond Accent */}
-				<path
-					d='M23.8 7.8L26.2 10.2L23.8 12.6L21.4 10.2Z'
-					fill={isMonochrome ? "#FFFFFF" : "#E5A83B"}
+				{/* 3. Mattress Cushion (Sleek Horizontal Pill with Soft Radius) */}
+				<rect
+					x='8.5'
+					y='15.5'
+					width='15.5'
+					height='3.8'
+					rx='1.5'
+					fill={isMonochrome ? "#CBD5E1" : "#FFFFFF"}
 				/>
 			</svg>
 		</div>
@@ -109,13 +129,13 @@ export function BrandLogo({
 		<Link
 			href={href}
 			className={`inline-flex items-center gap-2.5 transition-opacity hover:opacity-95 ${className}`}
-			aria-label='Choose Ghar'
+			aria-label='Choose Bed'
 		>
 			<BrandSymbol size={size} themeMode={themeMode} />
 
 			{!isSymbolOnly && (
-				<div className='flex items-center'>
-					{/* Brand Wordmark */}
+				<div className='flex items-baseline'>
+					{/* Brand Wordmark (Choose Bed - No .com in logo) */}
 					<span
 						className={`font-inter font-extrabold leading-none tracking-tight ${
 							textSizeMap[size]
@@ -128,10 +148,10 @@ export function BrandLogo({
 							className={
 								isForcedDark
 									? "text-[#34D399]"
-									: "text-[#1A533F] dark:text-[#34D399]"
+									: "text-[#10B981] dark:text-[#34D399]"
 							}
 						>
-							Ghar
+							Bed
 						</span>
 					</span>
 
@@ -144,7 +164,7 @@ export function BrandLogo({
 									: "text-[#059669] dark:text-[#34D399]"
 							}`}
 						>
-							PG &amp; Hostel
+							PG &amp; Hostel OS
 						</span>
 					)}
 				</div>

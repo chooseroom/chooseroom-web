@@ -19,7 +19,7 @@ export interface NotificationCardProps {
 export default function Notification({
 	id = "1",
 	title = "System Notification",
-	description = "Choose Ghar notification updates and alerts.",
+	description = "ChooseBed notification updates and alerts.",
 	timestamp,
 	type = "info",
 	link = "#",

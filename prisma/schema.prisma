@@ -80,6 +80,7 @@ model User {
   invitation            Invitation[]
   adminLogs             AdminAuditLog[] @relation("AdminActions")
   properties            Property[]
+  recordedPayments      PaymentRecord[]
 
   @@index([phone])
   @@index([status])
@@ -97,10 +98,129 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner       User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  rooms       Room[]
+  residents   Resident[]
+  rentCharges RentCharge[]
 
   @@index([ownerId])
   @@index([city])
+}
+
+model Room {
+  id           String   @id @default(cuid())
+  roomNumber   String   // e.g. "101", "G-01", "F2-A"
+  floor        String   // e.g. "Ground Floor", "Floor 1", "Terrace"
+  sharing      String   // "SINGLE" | "DOUBLE" | "TRIPLE" | "FOUR"
+  acType       String   // "AC" | "NON_AC"
+  rentPerBed   Int?     // Monthly rent per bed in whole Rupees (INR). Null = not set.
+  notes        String?  @db.Text
+  propertyId   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  property     Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  beds         Bed[]
+  residents    Resident[]
+
+  // Enforce unique room numbers per property
+  @@unique([propertyId, roomNumber])
+  @@index([propertyId])
+  @@index([floor])
+}
+
+model Bed {
+  id        String   @id @default(cuid())
+  bedNumber Int      // 1-based bed number within the room (1, 2, 3, 4)
+  status    String   @default("AVAILABLE") // "AVAILABLE" | "OCCUPIED" | "MAINTENANCE"
+  roomId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  room      Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  residents Resident[]
+
+  // Each bed number must be unique within a room
+  @@unique([roomId, bedNumber])
+  @@index([roomId])
+  @@index([status])
+}
+
+model Resident {
+  id              String       @id @default(cuid())
+  name            String
+  phone           String       // 10-digit Indian mobile number
+  email           String?
+  guardianName    String?
+  guardianPhone   String?
+  checkInDate     DateTime
+  checkOutDate    DateTime?
+  status          String       @default("ACTIVE") // "ACTIVE" | "CHECKED_OUT"
+  monthlyRent     Int          // Monthly rent in whole Rupees (INR)
+  securityDeposit Int          @default(0) // Security deposit in whole Rupees (INR)
+  notes           String?      @db.Text
+  propertyId      String
+  roomId          String
+  bedId           String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  property        Property     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  room            Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  bed             Bed          @relation(fields: [bedId], references: [id], onDelete: Cascade)
+  rentCharges     RentCharge[]
+
+  @@index([propertyId])
+  @@index([roomId])
+  @@index([bedId])
+  @@index([status])
+  @@index([phone])
+  @@index([checkInDate])
+}
+
+model RentCharge {
+  id            String          @id @default(cuid())
+  residentId    String
+  propertyId    String
+  billingPeriod String          // Format "YYYY-MM", e.g. "2026-10"
+  amount        Int             // Total rent obligation in whole INR
+  dueDate       DateTime        // Payment due date
+  notes         String?         @db.Text
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  resident      Resident        @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  property      Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  payments      PaymentRecord[]
+
+  // Exactly one rent obligation per resident per billing period
+  @@unique([residentId, billingPeriod])
+  @@index([propertyId])
+  @@index([residentId])
+  @@index([billingPeriod])
+  @@index([dueDate])
+}
+
+model PaymentRecord {
+  id              String      @id @default(cuid())
+  rentChargeId    String
+  amount          Int         // Payment received in whole INR
+  paymentDate     DateTime    @default(now())
+  paymentMode     String      // "CASH" | "UPI" | "BANK_TRANSFER"
+  referenceNumber String?     // UTR, UPI transaction ID, bank ref, or cash note
+  notes           String?     @db.Text
+  receiptNumber   String      @unique // Unique receipt identifier (e.g. RCP-202610-A1B2C3)
+  recordedById    String      // Owner User ID who verified/recorded this payment
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  rentCharge      RentCharge  @relation(fields: [rentChargeId], references: [id], onDelete: Cascade)
+  recordedBy      User        @relation(fields: [recordedById], references: [id], onDelete: Cascade)
+
+  @@index([rentChargeId])
+  @@index([paymentDate])
+  @@index([recordedById])
+  @@index([receiptNumber])
 }
 
 model AdminAuditLog {

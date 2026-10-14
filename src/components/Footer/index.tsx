@@ -15,10 +15,10 @@ const Footer = () => {
 							<BrandLogo themeMode='dark' />
 						</div>
 						<p className='mt-4 max-w-sm text-sm leading-relaxed text-slate-400'>
-							Choose Ghar is India&apos;s dedicated PG and hostel management
-							platform. Seamlessly organize properties, allocate rooms and beds,
-							maintain verified resident records, and maximize occupancy across
-							single and multi-branch locations.
+							Choose Bed (choosebed.com) is India&apos;s dedicated PG and hostel
+							management platform. Seamlessly organize properties, allocate rooms
+							and beds, maintain verified resident records, and maximize
+							occupancy across single and multi-branch locations.
 						</p>
 						<div className='mt-6 flex items-center gap-2 text-xs text-slate-400'>
 							<span className='h-2 w-2 rounded-full bg-emerald-500' />
@@ -121,7 +121,7 @@ const Footer = () => {
 
 				{/* Bottom Bar */}
 				<div className='mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#183A2E] pt-6 text-xs text-slate-400 sm:flex-row'>
-					<p>© {currentYear} Choose Ghar. All rights reserved.</p>
+					<p>© {currentYear} ChooseBed.com. All rights reserved.</p>
 					<p>
 						Simple and transparent management for Indian hostel & PG owners.
 					</p>

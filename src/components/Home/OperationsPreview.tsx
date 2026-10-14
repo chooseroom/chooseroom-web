@@ -753,7 +753,7 @@ export function OperationsPreview() {
 					Tap any bed or switch tabs above to test live interaction
 				</span>
 				<span className='hidden text-slate-400 dark:text-slate-500 sm:inline'>
-					Choose Ghar Interactive Preview
+					ChooseBed.com Interactive Preview
 				</span>
 			</div>
 		</div>

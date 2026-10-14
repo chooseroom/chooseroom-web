@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * Choose Ghar — Ultra-Premium Brand PreLoader
- * Features the signature Concept B CG architectural monogram
+ * ChooseBed.com — Ultra-Premium Brand PreLoader
+ * Features the signature ChooseBed monogram
  * enveloped by an emerald & gold orbital aura and smooth fade-out.
  */
 const PreLoader = () => {
@@ -18,13 +18,13 @@ const PreLoader = () => {
 		}, 650);
 
 		// Completely unmount after fade-out transition finishes
-		const unmountTimer = setTimeout(() => {
+		const removeTimer = setTimeout(() => {
 			setIsVisible(false);
-		}, 1000);
+		}, 1050);
 
 		return () => {
 			clearTimeout(fadeTimer);
-			clearTimeout(unmountTimer);
+			clearTimeout(removeTimer);
 		};
 	}, []);
 
@@ -32,19 +32,17 @@ const PreLoader = () => {
 
 	return (
 		<div
-			className={`duration-350 fixed inset-0 z-999999 flex flex-col items-center justify-center bg-[#FBF9F5] transition-opacity ease-out dark:bg-[#0B1713] ${
+			className={`fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-[#FBF9F5] transition-opacity duration-400 ease-out dark:bg-[#0E1713] ${
 				isFading ? "pointer-events-none opacity-0" : "opacity-100"
 			}`}
-			aria-hidden='true'
 		>
-			{/* Ambient Warm Glow */}
-			<div className='pointer-events-none absolute h-64 w-64 rounded-full bg-gradient-to-tr from-[#34D399]/15 via-[#E5A83B]/10 to-transparent blur-3xl' />
+			<div className='relative flex h-20 w-20 items-center justify-center'>
+				{/* Pulsing Emerald Halo */}
+				<div className='absolute h-20 w-20 animate-ping rounded-full bg-emerald-500/15 opacity-75 [animation-duration:2.2s]' />
 
-			{/* Center Brand Icon with Orbital Ring */}
-			<div className='relative flex items-center justify-center'>
-				{/* Rotating Emerald & Gold Orbit Ring */}
+				{/* Spinning Orbit Ring */}
 				<svg
-					className='h-20 w-20 animate-spin duration-1000'
+					className='absolute h-20 w-20 animate-spin text-emerald-600 [animation-duration:2.8s] dark:text-emerald-400'
 					viewBox='0 0 80 80'
 					fill='none'
 					xmlns='http://www.w3.org/2000/svg'
@@ -54,19 +52,23 @@ const PreLoader = () => {
 						cy='40'
 						r='36'
 						stroke='currentColor'
+						strokeWidth='2'
+						strokeLinecap='round'
+						strokeDasharray='55 170'
+						opacity='0.6'
+					/>
+					<circle
+						cx='40'
+						cy='40'
+						r='36'
+						stroke='url(#loader-gradient)'
 						strokeWidth='2.5'
 						strokeLinecap='round'
-						className='text-[#0B2B20]/10 dark:text-emerald-950/40'
-					/>
-					<path
-						d='M40 4C59.8823 4 76 20.1177 76 40'
-						stroke='url(#orbitGlow)'
-						strokeWidth='3'
-						strokeLinecap='round'
+						strokeDasharray='30 195'
 					/>
 					<defs>
 						<linearGradient
-							id='orbitGlow'
+							id='loader-gradient'
 							x1='40'
 							y1='4'
 							x2='76'
@@ -80,39 +82,62 @@ const PreLoader = () => {
 				</svg>
 
 				{/* Brand Symbol Squircle Emblem */}
-				<div className='absolute flex h-13 w-13 items-center justify-center rounded-xl bg-[#0B2B20] shadow-md ring-1 ring-[#1B4D3A] dark:bg-[#133E2F] dark:ring-[#25634B]/70'>
+				<div className='absolute flex h-13 w-13 items-center justify-center rounded-xl bg-[#082319] shadow-md ring-1 ring-[#174A37] dark:bg-[#0E2C22] dark:ring-[#2E7A5D]/70 dark:shadow-[0_0_15px_rgba(52,211,153,0.2)]'>
 					<svg
 						className='h-7 w-7'
 						viewBox='0 0 32 32'
 						fill='none'
 						xmlns='http://www.w3.org/2000/svg'
 					>
-						{/* Outer 'C' Ribbon */}
-						<path
-							d='M22.8 10.4C21 8.2 18.2 7 15.2 7C9.9 7 5.6 11 5.6 16.2C5.6 21.4 9.9 25.4 15.2 25.4C19.4 25.4 23 22.8 24.2 19'
-							stroke='#FFFFFF'
-							strokeWidth='2.8'
-							strokeLinecap='round'
-							strokeLinejoin='round'
+						{/* Headboard Post */}
+						<rect
+							x='5.5'
+							y='7.5'
+							width='3'
+							height='17'
+							rx='1.5'
+							fill='#34D399'
 						/>
-						{/* Inner 'G' Architectural Flow */}
-						<path
-							d='M15.2 12C12.7 12 10.7 13.9 10.7 16.2C10.7 18.5 12.7 20.4 15.2 20.4C17.7 20.4 19.7 18.5 19.7 16.2V15.8H15.2'
-							stroke='#34D399'
-							strokeWidth='2.4'
-							strokeLinecap='round'
-							strokeLinejoin='round'
+						{/* Horizontal Base Rail */}
+						<rect
+							x='5.5'
+							y='19'
+							width='20.5'
+							height='3'
+							rx='0.8'
+							fill='#34D399'
 						/>
-						{/* Golden Keystone Accent */}
-						<path d='M23.8 7.8L26.2 10.2L23.8 12.6L21.4 10.2Z' fill='#E5A83B' />
+						{/* Footboard Leg */}
+						<rect
+							x='23.5'
+							y='19'
+							width='2.5'
+							height='5.5'
+							rx='1'
+							fill='#34D399'
+						/>
+						{/* Cozy Pillow */}
+						<path
+							d='M8.5 16C8.5 12.2 11.8 11.2 14.5 12.2C15.5 12.6 16 14.2 15.5 16H8.5Z'
+							fill='#FFFFFF'
+						/>
+						{/* Mattress Cushion */}
+						<rect
+							x='8.5'
+							y='15.5'
+							width='15.5'
+							height='3.8'
+							rx='1.5'
+							fill='#FFFFFF'
+						/>
 					</svg>
 				</div>
 			</div>
 
-			{/* Brand Wordmark */}
-			<div className='mt-5 flex items-center gap-1.5 font-inter text-lg font-extrabold tracking-tight text-[#0B2B20] dark:text-white'>
+			{/* Brand Wordmark (Choose Bed - No .com) */}
+			<div className='mt-5 flex items-baseline gap-1 font-inter text-lg font-extrabold tracking-tight text-[#0B2B20] dark:text-white'>
 				<span>Choose</span>
-				<span className='text-[#1A533F] dark:text-[#34D399]'>Ghar</span>
+				<span className='text-[#10B981] dark:text-[#34D399]'>Bed</span>
 			</div>
 
 			{/* Micro-Progress Loading Pill */}

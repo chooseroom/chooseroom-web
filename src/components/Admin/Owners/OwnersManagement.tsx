@@ -235,7 +235,7 @@ export default function OwnersManagement({
 							<p className='mx-auto mt-1 max-w-sm text-xs text-slate-500 dark:text-slate-400'>
 								{searchQuery || statusFilter !== "ALL" || setupFilter !== "ALL"
 									? "Try adjusting your search criteria or resetting filters."
-									: "When Indian hostel and PG owners create accounts on Choose Ghar, their details will be manageable here."}
+									: "When Indian hostel and PG owners create accounts on ChooseBed, their details will be manageable here."}
 							</p>
 						</div>
 					) : (
@@ -485,7 +485,7 @@ export default function OwnersManagement({
 						<p className='mt-4 text-xs leading-relaxed text-slate-600 dark:text-slate-300'>
 							{modalAction === "SUSPEND"
 								? "Are you sure you want to suspend this PG Owner? Suspended owners are immediately blocked at authentication and middleware, and cannot log in or access protected PG operations."
-								: "Reactivating this account will restore immediate login and operational access to Choose Ghar."}
+								: "Reactivating this account will restore immediate login and operational access to ChooseBed."}
 						</p>
 
 						<div className='mt-4'>

@@ -122,7 +122,7 @@ export async function GET() {
 			// 4. Default Admin System Notification if list is small
 			notifications.push({
 				id: "admin-system-status",
-				title: "Choose Ghar System Health Active",
+				title: "ChooseBed System Health Active",
 				description:
 					"Database connected, multi-tenant PG/Hostel architecture operational.",
 				timestamp: new Date(Date.now() - 3600000 * 4).toISOString(),
@@ -166,7 +166,7 @@ export async function GET() {
 			// Account verification notice
 			notifications.push({
 				id: `owner-welcome-${dbUser.id}`,
-				title: "Welcome to Choose Ghar",
+				title: "Welcome to ChooseBed",
 				description:
 					"Your business owner account is verified. Manage your PG/Hostel properties and rooms effortlessly.",
 				timestamp: dbUser.createdAt.toISOString(),

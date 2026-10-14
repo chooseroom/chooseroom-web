@@ -1,4 +1,4 @@
-# Choose Ghar (चूज़ घर) 🏠
+# ChooseBed (choosebed.com) 🛏️
 
 > Modern PG, hostel, and co-living operations platform designed for business owners, residents, and platform administrators.
 
@@ -12,7 +12,7 @@
 
 ## 🌟 Overview
 
-**Choose Ghar** simplifies end-to-end PG and hostel management. From listing properties and assigning rooms to tracking monthly rent collections and safeguarding operational governance, the platform delivers an intuitive experience for PG owners alongside a centralized administration cockpit.
+**ChooseBed** (choosebed.com) simplifies end-to-end PG and hostel management. From listing properties and assigning rooms to tracking monthly rent collections and safeguarding operational governance, the platform delivers an intuitive experience for PG owners alongside a centralized administration cockpit.
 
 ---
 
@@ -64,7 +64,7 @@ pg-hostel-web/
 ├── prisma/
 │   └── schema.prisma          # Database models (User, Property, AuditLog, etc.)
 ├── public/
-│   ├── favicon.svg            # Choose Ghar branded favicon
+│   ├── favicon.svg            # ChooseBed branded favicon
 │   └── images/logo/           # Brand marks, symbols, and dark/light logos
 ├── src/
 │   ├── __tests__/             # Security and regression test suites
@@ -73,7 +73,7 @@ pg-hostel-web/
 │   │   │   ├── admin/         # Platform administration routes (Overview, Owners, Properties, Activity, Settings)
 │   │   │   ├── auth/          # Authentication flows (Signin, Signup, Reset Password)
 │   │   │   ├── user/          # PG Owner dashboard and operational modules
-│   │   │   └── page.tsx       # Choose Ghar landing page
+│   │   │   └── page.tsx       # ChooseBed landing page
 │   │   └── api/               # Next.js API route handlers (Auth, Admin actions, Webhooks)
 │   ├── components/
 │   │   ├── Admin/             # Admin suite components (OwnersManagement, ActivityLogViewer, etc.)
@@ -162,7 +162,7 @@ The application will be live at [http://localhost:3000](http://localhost:3000).
 ## 🗺️ Product Roadmap
 
 - [x] **Phase A**: Security hardening, password salting, role-based session isolation.
-- [x] **Phase B**: Choose Ghar modern brand identity, color tokens, and vector assets.
+- [x] **Phase B**: ChooseBed modern brand identity, color tokens, and vector assets.
 - [x] **Phase C**: High-converting PG Owner SaaS landing page with interactive previews.
 - [x] **Phase D**: Complete Admin Control Center (Owners management, Properties audit, Security logs, Settings).
 - [ ] **Phase E**: Interactive PG Room Layout Designer and Bed Allocation Visualizer.
@@ -172,4 +172,4 @@ The application will be live at [http://localhost:3000](http://localhost:3000).
 
 ## 📄 License
 
-Private and proprietary. All rights reserved by **Choose Ghar**.
+Private and proprietary. All rights reserved by **ChooseBed.com**.
